@@ -30,8 +30,9 @@ interface FeedbackModalProps {
   portal: 'user' | 'organization' | 'admin' | 'public';
 }
 
+import { BACKEND_URL } from '@/lib/constants';
+
 const HIDDEN_PATHS = ['/user/dashboard/trading'];
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
 
 export const FEEDBACK_FACTORS = [
   {
@@ -234,7 +235,7 @@ export default function FeedbackModal({ portal }: FeedbackModalProps) {
       // Check if user already has an experience rating
       setCheckingRating(true);
       axios
-        .get(`${API_URL}/api/feedback/my`, { withCredentials: true })
+        .get(`${BACKEND_URL}/api/feedback/my`, { withCredentials: true })
         .then((res) => {
           const feedbacks: Array<{ type: string }> = res.data.feedbacks ?? [];
           setHasExperienceRating(feedbacks.some((f) => f.type === 'multi_factor'));
@@ -297,7 +298,7 @@ export default function FeedbackModal({ portal }: FeedbackModalProps) {
     setError('');
     try {
       await axios.post(
-        `${API_URL}/api/feedback/submit`,
+        `${BACKEND_URL}/api/feedback/submit`,
         {
           type: 'multi_factor',
           portal,
@@ -328,7 +329,7 @@ export default function FeedbackModal({ portal }: FeedbackModalProps) {
     setError('');
     try {
       await axios.post(
-        `${API_URL}/api/feedback/submit`,
+        `${BACKEND_URL}/api/feedback/submit`,
         { type: reportType, content: reportContent, portal },
         { withCredentials: true }
       );

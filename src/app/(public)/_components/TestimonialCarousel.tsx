@@ -24,7 +24,7 @@ interface Testimonial {
   authorAvatar?: string | null;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { BACKEND_URL as API_URL } from '@/lib/constants';
 
 function StarRating({ rating }: { rating: number }) {
   return (

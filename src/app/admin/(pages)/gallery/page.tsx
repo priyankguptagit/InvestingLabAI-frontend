@@ -30,6 +30,7 @@ import { Label } from "@/shared-components/ui/label";
 import { ImageIcon, Plus, Trash2, X, ChevronLeft, ChevronRight, Maximize2, Sparkles, FolderPlus, UploadCloud, FileImage, Loader2, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { BACKEND_URL } from '@/lib/constants';
 
 // --- Helpers ---
 const truncateChars = (text: string | undefined, maxChars: number) => {
@@ -106,7 +107,7 @@ export default function GalleryPage() {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}/api/gallery`);
+        const response = await fetch(`${BACKEND_URL}/api/gallery`);
         const result = await response.json();
         if (result.success) {
           // Map MongoDB _id to React id
@@ -196,7 +197,7 @@ export default function GalleryPage() {
       formData.append("image", selectedFile);
       
       // 2. Perform Upload POST to backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}/api/upload`, {
+      const response = await fetch(`${BACKEND_URL}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -208,7 +209,7 @@ export default function GalleryPage() {
       }
 
       // 3. Save to MongoDB Database
-      const saveDbResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}/api/gallery`, {
+      const saveDbResponse = await fetch(`${BACKEND_URL}/api/gallery`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -282,7 +283,7 @@ export default function GalleryPage() {
     
     // Delete from Database
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}/api/gallery/${photoId}`, {
+      await fetch(`${BACKEND_URL}/api/gallery/${photoId}`, {
         method: 'DELETE'
       });
     } catch (err) {

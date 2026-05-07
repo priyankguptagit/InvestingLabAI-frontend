@@ -20,6 +20,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/shared-components/ui/dropdown-menu";
+import { BACKEND_URL } from '@/lib/constants';
 import { Button } from "@/shared-components/ui/button";
 
 // --- SECTIONS ADAPTED FOR 3D OVERLAY ---
@@ -100,7 +101,7 @@ export default function GalleryClient() {
     useEffect(() => {
         const fetchGallery = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}/api/gallery`);
+                const response = await fetch(`${BACKEND_URL}/api/gallery`);
                 const result = await response.json();
                 if (result.success) {
                     const fetchedPhotos = result.data.map((p: any) => ({

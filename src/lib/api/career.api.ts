@@ -1,12 +1,12 @@
 import axios from 'axios';
 import axiosInstance from '../axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { BACKEND_URL } from '@/lib/constants';
 
 export const careerApi = {
   submitApplication: async (formData: FormData) => {
     try {
-      const response = await axios.post(`${API_URL}/api/careers/submit`, formData, {
+      const response = await axios.post(`${BACKEND_URL}/api/careers/submit`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

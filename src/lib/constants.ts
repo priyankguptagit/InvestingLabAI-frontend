@@ -1,10 +1,13 @@
+// ─── Centralized URL Configuration ─────────────────────────────────────────
+// Change URLs in frontend/.env.local (dev) or Vercel Environment Variables (prod).
+// NEXT_PUBLIC_API_URL      → direct backend calls (gallery, uploads, websockets, etc.)
+// NEXT_PUBLIC_FRONTEND_URL → this frontend's own origin (used for absolute links)
+export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+export const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000';
+
 // API Base URL
-// If you are in Production (Vercel), use empty string.
-// This makes requests go to "https://praedico-frontend.vercel.app/api/..."
-// which the Rewrite rule above then forwards to the backend.
-// In both dev and production, use relative URLs so all /api/* requests go
-// through the Next.js proxy (next.config.ts rewrites). This is CRITICAL for
-// HttpOnly cookies: the backend must set them on the same origin as the
+// All /api/* requests go through the Next.js proxy (next.config.ts rewrites). This is
+// CRITICAL for HttpOnly cookies: the backend must set them on the same origin as the
 // frontend (localhost:3000 in dev, Vercel domain in prod).
 export const API_BASE_URL = "";
 

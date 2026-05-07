@@ -8,7 +8,7 @@ import {
   MarketStatusEvent,
 } from '@/lib/types/trading.types';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
+import { BACKEND_URL as SOCKET_URL } from '@/lib/constants';
 
 interface UseTradingWebSocketOptions {
   autoConnect?: boolean;

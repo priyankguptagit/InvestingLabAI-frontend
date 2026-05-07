@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { certificateApi, Certificate } from "@/lib/api/certificate.api";
 import { userApi } from "@/lib/api/user.api";
 import { generateStudentReportPDF } from "@/lib/utils/reportGenerator";
+import { BACKEND_URL } from "@/lib/constants";
 import { Button } from "@/shared-components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/shared-components/ui/tabs";
 import { Card, CardContent } from "@/shared-components/ui/card";
@@ -283,7 +284,7 @@ export default function ReportsPage() {
     useEffect(() => { fetchData(); }, []);
 
     const handleDownloadCertificate = (cert: Certificate) => {
-        const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"}${cert.certificateUrl}`;
+        const url = `${BACKEND_URL}${cert.certificateUrl}`;
         const link = document.createElement("a");
         link.href = url;
         link.target = "_blank";

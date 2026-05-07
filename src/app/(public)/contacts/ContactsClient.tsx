@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/shared-components/ui/card";
 import { Badge } from "@/shared-components/ui/badge";
 import { Input } from "@/shared-components/ui/input";
 import { Textarea } from "@/shared-components/ui/textarea";
+import { BACKEND_URL } from '@/lib/constants';
 
 
 /**
@@ -66,7 +67,7 @@ export default function ContactsClient() {
     setSubmitStatus('idle');
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/inquiries/create`, {
+      const response = await fetch(`${BACKEND_URL}/api/inquiries/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

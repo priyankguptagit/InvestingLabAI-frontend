@@ -23,7 +23,7 @@ import {
 } from '@/shared-components/ui/dialog';
 import { Separator } from '@/shared-components/ui/separator';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { BACKEND_URL as API_URL } from '@/lib/constants';
 
 interface FactorRating {
   factor: string;
