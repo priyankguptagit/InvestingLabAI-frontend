@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, TrendingDown, Activity, BarChart3, History, LayoutDashboard, LineChart, Briefcase, Lock, Clock, Loader2, Wallet, Newspaper, ArrowRightLeft, BarChart2, Table2, X } from "lucide-react";
+import { TrendingUp, TrendingDown, Activity, BarChart3, History, LayoutDashboard, LineChart, Briefcase, Lock, Clock, Loader2, Wallet, Newspaper, ArrowRightLeft, BarChart2, Table2, X, Maximize2, Minimize2, ExternalLink } from "lucide-react";
 import { Stock } from "@/lib/types/stock.types";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,6 +40,7 @@ export default function StockDetailModal({ isOpen, onClose, stock, theme = 'dark
   const [historyView, setHistoryView] = useState<'chart' | 'table'>('chart');
   const [isMarketOpen, setIsMarketOpen] = useState(false);
   const [chartLoaded, setChartLoaded] = useState(false);
+  const [isChartFullscreen, setIsChartFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   // Keep a ref so the ESC handler always calls the latest onClose
   // without needing it in the effect dependency array.
@@ -275,6 +276,20 @@ export default function StockDetailModal({ isOpen, onClose, stock, theme = 'dark
     }
   }, [activeTab, chartLoaded, stock, isDark]);
 
+  // ESC key: exit fullscreen first, then close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isChartFullscreen) {
+          e.stopPropagation();
+          setIsChartFullscreen(false);
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => document.removeEventListener('keydown', handleKeyDown, true);
+  }, [isChartFullscreen]);
+
   if (!isOpen || !stock) return null;
 
   const isPositive = stock.change >= 0;
@@ -283,7 +298,7 @@ export default function StockDetailModal({ isOpen, onClose, stock, theme = 'dark
 
   const tabs = [
     { id: 'overview' as ModalTab, label: 'Overview', icon: LayoutDashboard },
-    { id: 'chart' as ModalTab, label: 'Live Chart', icon: LineChart },
+    { id: 'chart' as ModalTab, label: 'TradingView', icon: LineChart },
     { id: 'history' as ModalTab, label: 'History', icon: History },
     { id: 'trading' as ModalTab, label: 'Trade', icon: Briefcase },
   ];
@@ -663,13 +678,79 @@ export default function StockDetailModal({ isOpen, onClose, stock, theme = 'dark
                   </motion.div>
                 )}
 
+                {/* ── TradingView Chart Tab ── */}
                 <div className={`w-full ${activeTab === 'chart' ? 'block' : 'hidden'}`}>
-                  <div
-                    className={`w-full ${isDark ? 'bg-[#0A0A0A]' : 'bg-white'}`}
-                    style={{ height: '520px' }}
-                  >
-                    <div className="w-full h-full" ref={containerRef} />
+
+                  {/* Wrapper: CSS fullscreen — containerRef NEVER changes, only the parent resizes */}
+                  <div className={isChartFullscreen
+                    ? 'fixed inset-0 z-[99999] flex flex-col bg-[#0A0A0A]'
+                    : `${isDark ? 'bg-[#0A0A0A]' : 'bg-white'}`
+                  }>
+                    {/* Toolbar */}
+                    <div className={`flex items-center justify-between px-5 py-3 border-b shrink-0 ${
+                      isChartFullscreen
+                        ? 'border-white/[0.07] bg-[#0f0f0f]'
+                        : isDark ? 'border-white/[0.06]' : 'border-slate-100'
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
+                          <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <LineChart className="w-3 h-3 text-white" />
+                          </div>
+                          <span className="text-xs font-bold text-indigo-400 tracking-wide">TradingView</span>
+                        </div>
+                        <span className={`text-xs font-medium ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                          NSE:{stock.symbol} · Real-time
+                        </span>
+                        <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-500">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          LIVE
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`https://www.tradingview.com/chart/?symbol=NSE:${stock.symbol}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                            isDark
+                              ? 'text-slate-400 hover:text-white border-white/[0.07] hover:bg-white/[0.05]'
+                              : 'text-slate-500 hover:text-slate-800 border-slate-200 hover:bg-slate-50'
+                          }`}
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          Open in TradingView
+                        </a>
+                        <button
+                          onClick={() => setIsChartFullscreen(prev => !prev)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+                            isDark
+                              ? 'text-slate-400 hover:text-white border-white/[0.07] hover:bg-white/[0.05]'
+                              : 'text-slate-500 hover:text-slate-800 border-slate-200 hover:bg-slate-50'
+                          }`}
+                        >
+                          {isChartFullscreen
+                            ? <><Minimize2 className="w-3 h-3" />&nbsp;Exit Fullscreen</>
+                            : <><Maximize2 className="w-3 h-3" />&nbsp;Fullscreen</>
+                          }
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Chart — single permanent div, ref never moves */}
+                    <div className="w-full flex-1" style={isChartFullscreen ? {} : { height: '500px' }}>
+                      <div className="w-full h-full" ref={containerRef} />
+                    </div>
+
+                    {/* Footer */}
+                    <div className={`flex items-center justify-between px-5 py-2 border-t text-[10px] font-medium shrink-0 ${
+                      isDark ? 'border-white/[0.05] text-slate-600' : 'border-slate-100 text-slate-400'
+                    }`}>
+                      <span>Powered by TradingView · Data may be delayed 15 min</span>
+                      <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>© TradingView Inc.</span>
+                    </div>
                   </div>
+
                 </div>
 
                 {/* 4. TRADING TAB */}
