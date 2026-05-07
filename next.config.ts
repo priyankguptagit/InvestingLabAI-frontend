@@ -4,7 +4,7 @@ const isDev = process.env.NODE_ENV === "development";
 // Proxy destination for /api/* rewrites.
 // Set NEXT_BACKEND_URL in .env.local (dev) or Vercel env vars (prod).
 const backendUrl = process.env.NEXT_BACKEND_URL ||
-  (isDev ? 'http://localhost:5001' : 'https://investing-lab-ai-backend.vercel.app/');
+  (isDev ? 'http://localhost:5001' : 'https://investing-lab-ai-backend.vercel.app');
 
 const nextConfig: NextConfig = {
   transpilePackages: ['react-select-virtualized', 'react-virtualized'],
