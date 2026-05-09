@@ -13,8 +13,9 @@ export default function OrganizationLayout({
 }) {
     const pathname = usePathname();
     const isCoordinatorPortal = pathname?.startsWith('/organization/coordinator/') || pathname === '/organization/coordinator';
+    const isVerifyPage = pathname?.startsWith('/organization/verify/');
 
-    if (isCoordinatorPortal) {
+    if (isCoordinatorPortal || isVerifyPage) {
         return <>{children}</>;
     }
 
