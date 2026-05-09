@@ -26,6 +26,12 @@ export default function ApplyPage() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    mobile: "",
+    email: ""
+  });
+
   const [formData, setFormData] = useState({
     type: "FullTime",
     category: "Technical",
@@ -37,6 +43,23 @@ export default function ApplyPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    setFormErrors(prev => ({ ...prev, [name]: "" }));
+
+    if (name === "name") {
+      if (value !== "" && !/^[a-zA-Z\s]*$/.test(value)) {
+        setFormErrors(prev => ({ ...prev, name: "Name should contain only alphabets and spaces." }));
+        return;
+      }
+    }
+
+    if (name === "mobile") {
+      if (value !== "" && !/^\d*$/.test(value)) {
+        setFormErrors(prev => ({ ...prev, mobile: "Mobile should contain only numbers." }));
+        return;
+      }
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -64,6 +87,17 @@ export default function ApplyPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (wordCount > 200) return;
+    
+    if (formData.name.trim().length < 2) {
+      setFormErrors(prev => ({ ...prev, name: "Please enter a valid full name." }));
+      return;
+    }
+    
+    if (formData.mobile.length !== 10) {
+      setFormErrors(prev => ({ ...prev, mobile: "Mobile number must be exactly 10 digits." }));
+      return;
+    }
+
     if (!resumeFile) {
       setFileError("Please upload your resume (PDF, max 2 MB).");
       return;
@@ -238,8 +272,13 @@ export default function ApplyPage() {
                         onChange={handleInputChange}
                         required
                         placeholder="John Doe"
-                        className="w-full bg-[#0F172A]/80 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                        className={`w-full bg-[#0F172A]/80 border ${formErrors.name ? 'border-red-500/50 focus:ring-red-500/50' : 'border-white/10 focus:ring-indigo-500/50'} rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 transition-all`}
                       />
+                      {formErrors.name && (
+                        <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> {formErrors.name}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -274,8 +313,13 @@ export default function ApplyPage() {
                         maxLength={10}
                         title="Please enter exactly 10 digits"
                         placeholder="e.g. 9876543210"
-                        className="w-full bg-[#0F172A]/80 border border-white/10 rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+                        className={`w-full bg-[#0F172A]/80 border ${formErrors.mobile ? 'border-red-500/50 focus:ring-red-500/50' : 'border-white/10 focus:ring-indigo-500/50'} rounded-xl px-4 py-3 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 transition-all`}
                       />
+                      {formErrors.mobile && (
+                        <p className="text-xs text-red-400 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> {formErrors.mobile}
+                        </p>
+                      )}
                     </div>
 
                     {/* Resume Upload — inline */}

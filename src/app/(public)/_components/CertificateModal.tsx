@@ -89,7 +89,7 @@ export default function CertificateModal({ isOpen, onClose }: CertificateModalPr
                                     <Label htmlFor="code" className="text-xs font-black uppercase tracking-widest text-slate-500">Certificate Code</Label>
                                     <div className="relative group">
                                         <div className="absolute left-0 top-0 bottom-0 px-4 flex items-center justify-center bg-slate-900 border-r border-slate-800 rounded-l-xl text-[10px] font-black text-indigo-400 tracking-widest uppercase">
-                                            PRD-
+                                            PGR-
                                         </div>
                                         <Input
                                             id="code"

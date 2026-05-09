@@ -11,6 +11,7 @@ import {
   X,
   CheckCircle2,
   Loader2,
+  AlertCircle,
   ArrowRight,
   TrendingUp,
   Sparkles,
@@ -46,6 +47,34 @@ export default function ContactsClient() {
     description: ""
   });
 
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    mobile: "",
+    email: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    setFormErrors(prev => ({ ...prev, [name]: "" }));
+
+    if (name === "name") {
+      if (value !== "" && !/^[a-zA-Z\s]*$/.test(value)) {
+        setFormErrors(prev => ({ ...prev, name: "Name should contain only alphabets and spaces." }));
+        return;
+      }
+    }
+
+    if (name === "mobile") {
+      if (value !== "" && !/^\d*$/.test(value)) {
+        setFormErrors(prev => ({ ...prev, mobile: "Mobile should contain only numbers." }));
+        return;
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isFormOpen) {
@@ -63,6 +92,17 @@ export default function ContactsClient() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (wordCount > 100) return;
+    
+    if (formData.name.trim().length < 2) {
+      setFormErrors(prev => ({ ...prev, name: "Please enter a valid full name." }));
+      return;
+    }
+    
+    if (formData.mobile.length !== 10) {
+      setFormErrors(prev => ({ ...prev, mobile: "Mobile number must be exactly 10 digits." }));
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
@@ -400,11 +440,17 @@ export default function ContactsClient() {
                       <Input
                         required
                         type="text"
+                        name="name"
                         placeholder="e.g. Priyank Gupta"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full h-14 px-6 rounded-[1.5rem] bg-white/10 border-white/20 text-white placeholder:text-slate-500 focus:ring-indigo-500/50 focus:bg-white/20 transition-all font-bold text-base hover:border-indigo-500/50"
+                        onChange={handleInputChange}
+                        className={`w-full h-14 px-6 rounded-[1.5rem] bg-white/10 ${formErrors.name ? 'border-rose-500/50 focus:ring-rose-500/50' : 'border-white/20 focus:ring-indigo-500/50 hover:border-indigo-500/50'} text-white placeholder:text-slate-500 focus:bg-white/20 transition-all font-bold text-base`}
                       />
+                      {formErrors.name && (
+                        <p className="text-[10px] text-rose-400 mt-1 flex items-center gap-1 font-bold">
+                          <AlertCircle className="w-3 h-3" /> {formErrors.name}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
@@ -431,17 +477,20 @@ export default function ContactsClient() {
                       <Input
                         required
                         type="tel"
+                        name="mobile"
                         pattern="\d{10}"
                         maxLength={10}
                         title="Please enter exactly 10 digits"
                         placeholder="e.g. 9876543210"
                         value={formData.mobile}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                          setFormData({ ...formData, mobile: val });
-                        }}
-                        className="w-full h-14 px-6 rounded-[1.5rem] bg-white/10 border-white/20 text-white placeholder:text-slate-500 focus:ring-indigo-500/50 focus:bg-white/20 transition-all font-bold text-base hover:border-indigo-500/50"
+                        onChange={handleInputChange}
+                        className={`w-full h-14 px-6 rounded-[1.5rem] bg-white/10 ${formErrors.mobile ? 'border-rose-500/50 focus:ring-rose-500/50' : 'border-white/20 focus:ring-indigo-500/50 hover:border-indigo-500/50'} text-white placeholder:text-slate-500 focus:bg-white/20 transition-all font-bold text-base`}
                       />
+                      {formErrors.mobile && (
+                        <p className="text-[10px] text-rose-400 mt-1 flex items-center gap-1 font-bold">
+                          <AlertCircle className="w-3 h-3" /> {formErrors.mobile}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2 flex items-center gap-2">
