@@ -26,4 +26,9 @@ export const certificateApi = {
     const response = await axiosInstance.get<CertificatesResponse>('/api/certificates/my');
     return response.data;
   },
+
+  validateCertificate: async (certificateCode: string, userName: string) => {
+    const response = await axiosInstance.post('/api/certificates/validate', { certificateCode, userName });
+    return response.data;
+  },
 };

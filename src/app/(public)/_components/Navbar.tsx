@@ -4,10 +4,11 @@
 import { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X, Zap, Award } from "lucide-react";
 import Image from "next/image";
 import LoginModal from "@/app/user/_components/LoginModal";
 import RegisterModal from "@/app/user/_components/RegisterModal";
+import CertificateModal from "./CertificateModal";
 
 /**
  * SearchParamsHandler - Handles URL search parameters
@@ -50,6 +51,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen]     = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
 
   const pathname = usePathname();
 
@@ -132,6 +134,13 @@ export default function Navbar() {
           {/* ── DESKTOP AUTH BUTTONS (hidden below lg) ──────────── */}
           <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
             <button
+              onClick={() => setIsCertificateModalOpen(true)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all mr-2 group shadow-lg shadow-indigo-500/10"
+            >
+              <Award className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+              Certificate
+            </button>
+            <button
               onClick={handleSignIn}
               className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
             >
@@ -195,6 +204,13 @@ export default function Navbar() {
             {/* Auth buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
+                onClick={() => { setMobileMenuOpen(false); setIsCertificateModalOpen(true); }}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:bg-indigo-500/20 transition-all"
+              >
+                <Award size={18} />
+                Certificate
+              </button>
+              <button
                 onClick={() => { setMobileMenuOpen(false); handleSignIn(); }}
                 className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all text-sm"
               >
@@ -235,6 +251,10 @@ export default function Navbar() {
           setIsRegisterModalOpen(false);
           setIsLoginModalOpen(true);
         }}
+      />
+      <CertificateModal
+        isOpen={isCertificateModalOpen}
+        onClose={() => setIsCertificateModalOpen(false)}
       />
     </>
   );
