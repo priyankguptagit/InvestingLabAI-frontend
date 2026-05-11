@@ -8,6 +8,7 @@ export interface TradeRequest {
   limitPrice?: number;
   stopLossPrice?: number;
   reason?: string;
+  expectedPrice?: number;
 }
 
 export interface Trade {
@@ -55,6 +56,8 @@ export interface Portfolio {
   holdings: PortfolioHolding[];
   totalValue: number;
   availableBalance: number;
+  initialBalance?: number;
+  realizedPL?: number;
   summary: {
     totalHoldings: number;
     totalInvested: number;

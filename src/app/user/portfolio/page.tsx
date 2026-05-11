@@ -222,27 +222,28 @@ export default function PortfolioPage() {
     // ------------------------------------------------------------------
     // Helper Logic & Calculations
     // ------------------------------------------------------------------
-    // ------------------------------------------------------------------
-    // Helper Logic & Calculations (Zerodha / Angel One Style)
-    // ------------------------------------------------------------------
+    
     // 1. Invested Amount: Total money put into active holdings
     const totalInvested = portfolio?.summary?.totalInvested || 0;
     
-    // 2. Total Value (Current Value): Present market value of all active holdings
+    // 2. Current Holdings Value: Present market value of all active holdings
     const currentValue = portfolio?.summary?.currentValue || 0;
 
-    // 3. Overall Returns (P&L): Difference between current market value and invested amount
-    const totalPL = currentValue - totalInvested;
+    // 3. Buying Power: Available cash balance
+    const buyingPower = portfolio?.availableBalance || 0;
 
-    // 4. Return Percentage: P&L relative to the invested amount
+    // 4. Total Account Value = Cash + Current Value of Holdings
+    const totalAccountValue = buyingPower + currentValue;
+
+    // 5. Overall Returns (Unrealized P&L of active holdings)
+    const totalPL = portfolio?.summary?.totalPL || 0;
+
+    // 6. Return Percentage: P&L relative to the invested amount
     const totalPLPercent = totalInvested > 0
         ? (totalPL / totalInvested) * 100
         : 0;
 
     const isProfitable = totalPL >= 0;
-
-    // 5. Buying Power: Available cash balance
-    const buyingPower = portfolio?.availableBalance || 0;
 
     // ------------------------------------------------------------------
     // Components (Internal for styling)
@@ -289,46 +290,84 @@ export default function PortfolioPage() {
                 </div>
 
                 {/* SECTION 1: HIGH-LEVEL METRICS */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
-                    {/* CARD 1: TOTAL PORTFOLIO VALUE */}
+                    {/* CARD 1: TOTAL ACCOUNT VALUE */}
                     <Card className="group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-primary opacity-70" />
                         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Total Value</CardTitle>
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Total Account Value</CardTitle>
                             <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300">
                                 <Wallet className="w-4 h-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-black tracking-tight">
-                                {portfolio ? `₹${currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <ValueSkeleton />}
+                            <div className="text-2xl font-black tracking-tight xl:text-3xl">
+                                {portfolio ? `₹${totalAccountValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <ValueSkeleton />}
                             </div>
                             <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5">
                                 <span className="flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-[10px] uppercase font-black tracking-widest border border-emerald-500/20 shadow-sm">
-                                    <Activity size={10} className="animate-pulse" /> Live Market
+                                    <Activity size={10} className="animate-pulse" /> Cash + Stocks
                                 </span>
                             </p>
                         </CardContent>
                     </Card>
 
-                    {/* CARD 2: TOTAL INVESTED */}
+                    {/* CARD 2: BUYING POWER */}
+                    <Card className="group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 hover:border-amber-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-600 opacity-70" />
+                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Buying Power</CardTitle>
+                            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
+                                <DollarSign className="w-4 h-4" />
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black tracking-tight xl:text-3xl">
+                                {currentPlan === 'Free' ? (
+                                    <span className="text-2xl text-muted-foreground flex items-center gap-2 font-bold italic opacity-40">
+                                        <Lock size={20} /> Locked
+                                    </span>
+                                ) : portfolio ? (
+                                    `₹${buyingPower.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                ) : <ValueSkeleton />}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* CARD 3: CURRENT HOLDINGS VALUE */}
+                    <Card className="group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-70" />
+                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Current Holdings</CardTitle>
+                            <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-500 group-hover:bg-cyan-500 group-hover:text-white transition-colors duration-300">
+                                <PieChart className="w-4 h-4" />
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-black tracking-tight xl:text-3xl">
+                                {portfolio ? `₹${currentValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <ValueSkeleton />}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* CARD 4: TOTAL INVESTED */}
                     <Card className="group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 hover:border-purple-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:-translate-y-1">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500 opacity-70" />
                         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                             <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Invested Amount</CardTitle>
                             <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300">
-                                <TrendingUp className="w-4 h-4" />
+                                <Briefcase className="w-4 h-4" />
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-3xl font-black tracking-tight">
+                            <div className="text-2xl font-black tracking-tight xl:text-3xl">
                                 {portfolio ? `₹${totalInvested.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <ValueSkeleton />}
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* CARD 3: PROFIT & LOSS */}
+                    {/* CARD 5: PROFIT & LOSS */}
                     <Card className={cn(
                         "group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 transition-all duration-500 hover:shadow-2xl hover:-translate-y-1",
                         isProfitable ? "hover:border-emerald-500/50 hover:shadow-emerald-500/10" : "hover:border-red-500/50 hover:shadow-red-500/10"
@@ -347,7 +386,7 @@ export default function PortfolioPage() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className={cn("text-3xl font-black tracking-tight", isProfitable ? "text-emerald-500" : "text-red-500")}>
+                            <div className={cn("text-2xl font-black tracking-tight xl:text-3xl", isProfitable ? "text-emerald-500" : "text-red-500")}>
                                 {portfolio ? `${isProfitable ? "+" : "-"}₹${Math.abs(totalPL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : <ValueSkeleton />}
                             </div>
                             {portfolio && (
@@ -357,28 +396,6 @@ export default function PortfolioPage() {
                                     <span className="text-muted-foreground ml-1 opacity-60">all time</span>
                                 </p>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    {/* CARD 4: AVAILABLE BALANCE */}
-                    <Card className="group relative overflow-hidden backdrop-blur-md bg-card/60 border-border/50 hover:border-amber-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/10 hover:-translate-y-1">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-600 opacity-70" />
-                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                            <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Buying Power</CardTitle>
-                            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
-                                <DollarSign className="w-4 h-4" />
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-black tracking-tight">
-                                {currentPlan === 'Free' ? (
-                                    <span className="text-2xl text-muted-foreground flex items-center gap-2 font-bold italic opacity-40">
-                                        <Lock size={20} /> Locked
-                                    </span>
-                                ) : portfolio ? (
-                                    `₹${buyingPower.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                ) : <ValueSkeleton />}
-                            </div>
                         </CardContent>
                     </Card>
                 </div>
