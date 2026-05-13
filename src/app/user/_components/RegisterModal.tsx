@@ -13,8 +13,11 @@ import { Separator } from "@/shared-components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared-components/ui/tabs";
 
 const DESIGNATIONS = [
-  "Principal", "Dean", "Director", "Vice-Chancellor", "Pro-Vice-Chancellor",
-  "Registrar", "Head of Department", "Coordinator", "Administrator", "Other"
+  { label: "Dean", value: "dean" },
+  { label: "Director", value: "director" },
+  { label: "Principal", value: "principal" },
+  { label: "Admin", value: "admin" },
+  { label: "Other", value: "other" },
 ];
 
 interface RegisterModalProps {
@@ -435,7 +438,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                         >
                           <option value="">Select designation...</option>
                           {DESIGNATIONS.map(d => (
-                            <option key={d} value={d}>{d}</option>
+                            <option key={d.value} value={d.value}>{d.label}</option>
                           ))}
                         </select>
                       </div>
