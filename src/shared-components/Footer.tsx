@@ -6,15 +6,16 @@ import Image from "next/image";
 import { Heart, Linkedin, ArrowRight, Twitter } from "lucide-react";
 
 interface FooterProps {
-  variant?: 'public' | 'user';
+  variant?: "public" | "user";
 }
 
-export default function Footer({ variant = 'public' }: FooterProps) {
-  const isPublic = variant === 'public';
+export default function Footer({ variant = "public" }: FooterProps) {
+  const isPublic = variant === "public";
 
   return (
-    <footer className={`relative ${isPublic ? 'bg-[#020617]' : 'bg-transparent'} pt-8 pb-4 overflow-hidden ${isPublic ? 'border-t border-slate-800/60' : ''}`}>
-
+    <footer
+      className={`relative ${isPublic ? "bg-[#020617]" : "bg-transparent"} pt-8 pb-4 overflow-hidden ${isPublic ? "border-t border-slate-800/60" : ""}`}
+    >
       {/* AMBIENT TOP GLOW - Only for Public */}
       {isPublic && (
         <>
@@ -25,10 +26,8 @@ export default function Footer({ variant = 'public' }: FooterProps) {
       )}
 
       <div className="container mx-auto px-6 relative z-10">
-
         {/* MAIN GRID — Brand | Company | Resources */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-12 gap-x-8 gap-y-8 mb-8">
-
           {/* BRAND */}
           <div className="col-span-2 md:col-span-3 lg:col-span-4 space-y-5">
             <Link href="/" className="inline-flex items-center gap-2 group">
@@ -39,11 +38,14 @@ export default function Footer({ variant = 'public' }: FooterProps) {
                 height={40}
                 className="rounded-xl group-hover:scale-110 transition-transform duration-300"
               />
-              <span className="text-2xl font-bold tracking-tight text-white">Praedico</span>
+              <span className="text-2xl font-bold tracking-tight text-white">
+                Praedico
+              </span>
             </Link>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-              Empowering the next generation of digital research with advanced security, real-time analytics, and institutional-grade interfaces.
+              Empoweringgg the next generation of digital research with advanced
+              security, real-time analytics, and institutional-grade interfaces.
             </p>
 
             {/* Social Icons */}
@@ -64,8 +66,12 @@ export default function Footer({ variant = 'public' }: FooterProps) {
           </div>
 
           {/* COMPANY */}
-          <div className={`col-span-1 ${isPublic ? 'lg:col-span-2' : 'lg:col-span-4'}`}>
-            <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest">Company</h4>
+          <div
+            className={`col-span-1 ${isPublic ? "lg:col-span-2" : "lg:col-span-4"}`}
+          >
+            <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest">
+              Company
+            </h4>
             <ul className="space-y-4">
               <FooterLink href="/about">About</FooterLink>
               <FooterLink href="/product">Product</FooterLink>
@@ -76,8 +82,12 @@ export default function Footer({ variant = 'public' }: FooterProps) {
           </div>
 
           {/* RESOURCES */}
-          <div className={`col-span-1 ${isPublic ? 'lg:col-span-2' : 'lg:col-span-4'}`}>
-            <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest">Resources</h4>
+          <div
+            className={`col-span-1 ${isPublic ? "lg:col-span-2" : "lg:col-span-4"}`}
+          >
+            <h4 className="text-white font-bold mb-5 text-xs uppercase tracking-widest">
+              Resources
+            </h4>
             <ul className="space-y-4">
               <FooterLink href="/services">Services</FooterLink>
               <FooterLink href="/news">News</FooterLink>
@@ -91,19 +101,24 @@ export default function Footer({ variant = 'public' }: FooterProps) {
             <div className="col-span-2 md:col-span-3 lg:col-span-4 space-y-6">
               <div className="relative group">
                 <h3 className="text-xl font-bold text-white mb-3">
-                  Ready to elevate your <span className="text-indigo-400">trading?</span>
+                  Ready to elevate your{" "}
+                  <span className="text-indigo-400">trading?</span>
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed mb-6 font-medium max-w-xs">
-                  Experience institutional-grade analytics and predictive intelligence with the Praedico Elite Terminal.
+                  Experience institutional-grade analytics and predictive
+                  intelligence with the Praedico Elite Terminal.
                 </p>
-                <Link 
+                <Link
                   href="/?openRegister=true"
                   className="inline-flex items-center gap-2 text-sm font-bold text-white hover:text-indigo-400 transition-colors group/link"
                 >
-                  Get Started Now 
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                  Get Started Now
+                  <ArrowRight
+                    size={16}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </Link>
-                
+
                 {/* Subtle underline decoration */}
                 <div className="mt-8 h-[1px] w-full bg-gradient-to-r from-indigo-500/50 to-transparent" />
               </div>
@@ -112,30 +127,51 @@ export default function Footer({ variant = 'public' }: FooterProps) {
         </div>
 
         {/* BOTTOM BAR */}
-        <div className={`border-t border-slate-800/50 ${isPublic ? 'mt-8' : 'mt-6'} pt-6 flex flex-col md:flex-row justify-between items-center gap-3 w-full text-slate-400 text-sm`}>
-
+        <div
+          className={`border-t border-slate-800/50 ${isPublic ? "mt-8" : "mt-6"} pt-6 flex flex-col md:flex-row justify-between items-center gap-3 w-full text-slate-400 text-sm`}
+        >
           <div className="flex flex-col gap-2">
             <p className="text-xs text-slate-500 font-medium tracking-wide">
               © 2026 Praedico Global Research Systems. All rights reserved.
             </p>
             {isPublic && (
               <div className="flex gap-4 text-[10px] text-slate-600 font-bold uppercase tracking-widest">
-                  <Link href="/privacy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link>
-                  <Link href="/terms" className="hover:text-indigo-400 transition-colors">Terms of Service</Link>
-                  <Link href="/cookies" className="hover:text-indigo-400 transition-colors">Cookie Settings</Link>
+                <Link
+                  href="/privacy"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  href="/terms"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  Terms of Service
+                </Link>
+                <Link
+                  href="/cookies"
+                  className="hover:text-indigo-400 transition-colors"
+                >
+                  Cookie Settings
+                </Link>
               </div>
             )}
           </div>
 
           {/* SINGLE CREDIT PILL */}
-          <div className={`flex items-center gap-3 ${isPublic ? 'px-6 py-3' : 'px-5 py-2.5'} rounded-full bg-slate-900/50 border border-slate-800/50 hover:border-indigo-500/30 transition-all duration-500 group ${isPublic ? 'hover:shadow-2xl hover:shadow-indigo-500/10' : ''}`}>
-            <span className="text-[11px] text-slate-400">Designed &amp; Built by</span>
-            <span className={`${isPublic ? 'text-[11px]' : 'text-xs'} font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 group-hover:from-indigo-300 group-hover:to-pink-300 transition-all`}>
+          <div
+            className={`flex items-center gap-3 ${isPublic ? "px-6 py-3" : "px-5 py-2.5"} rounded-full bg-slate-900/50 border border-slate-800/50 hover:border-indigo-500/30 transition-all duration-500 group ${isPublic ? "hover:shadow-2xl hover:shadow-indigo-500/10" : ""}`}
+          >
+            <span className="text-[11px] text-slate-400">
+              Designed &amp; Built by
+            </span>
+            <span
+              className={`${isPublic ? "text-[11px]" : "text-xs"} font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 group-hover:from-indigo-300 group-hover:to-pink-300 transition-all`}
+            >
               Arjun, Sambhav &amp; Unnati
             </span>
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 animate-pulse flex-shrink-0" />
           </div>
-
         </div>
       </div>
     </footer>
@@ -145,7 +181,13 @@ export default function Footer({ variant = 'public' }: FooterProps) {
 // ─────────────────────────────────────────────
 // HELPER
 // ─────────────────────────────────────────────
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
     <li>
       <Link
