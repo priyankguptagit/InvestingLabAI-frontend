@@ -133,7 +133,6 @@ export const TradingPanel: React.FC<TradingPanelProps> = ({
         setLimitPrice("");
         setStopLossPrice("");
         setReason("");
-        setShowReason(false);
 
         // Fire achievement animations!
         fireConfetti();
