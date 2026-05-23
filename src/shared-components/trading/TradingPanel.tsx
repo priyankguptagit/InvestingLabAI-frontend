@@ -12,8 +12,6 @@ import {
   Plus,
   TrendingUp,
   TrendingDown,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
@@ -49,7 +47,6 @@ export const TradingPanel: React.FC<TradingPanelProps> = ({
   const [limitPrice, setLimitPrice] = useState<string>("");
   const [stopLossPrice, setStopLossPrice] = useState<string>("");
   const [reason, setReason] = useState<string>("");
-  const [showReason, setShowReason] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -424,49 +421,29 @@ export const TradingPanel: React.FC<TradingPanelProps> = ({
             </div>
           </div>
 
-          {/* Optional Reason Accordion - Making trading FAST by hiding it */}
+          {/* Trade Note - always visible */}
           <div className="flex flex-col">
-            <button
-              onClick={() => setShowReason(!showReason)}
+            <label
               className={cn(
-                "flex items-center gap-2 text-xs font-bold transition-colors mb-2 w-fit",
+                "flex items-center gap-2 text-xs font-bold mb-2 w-fit",
                 textMuted,
-                "hover:text-primary",
               )}
             >
               <FileText className="w-3.5 h-3.5" />
-              {showReason ? "Hide Trade Note" : "Add Trade Note"}
-              {showReason ? (
-                <ChevronUp className="w-3.5 h-3.5" />
-              ) : (
-                <ChevronDown className="w-3.5 h-3.5" />
-              )}
-            </button>
+              Trade Note
+            </label>
 
-            <AnimatePresence>
-              {showReason && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <textarea
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    placeholder="Optional: Why are you making this trade?"
-                    rows={2}
-                    className={cn(
-                      "w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none transition-colors mb-4",
-                      isDark
-                        ? "bg-black/20 text-white"
-                        : "bg-white text-slate-900",
-                      border,
-                    )}
-                  />
-                </motion.div>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Why are you making this trade?"
+              rows={2}
+              className={cn(
+                "w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-primary resize-none transition-colors mb-4",
+                isDark ? "bg-black/20 text-white" : "bg-white text-slate-900",
+                border,
               )}
-            </AnimatePresence>
+            />
           </div>
 
           {error && (
