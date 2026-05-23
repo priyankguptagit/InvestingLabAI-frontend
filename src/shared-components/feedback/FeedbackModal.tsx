@@ -39,7 +39,7 @@ export const FEEDBACK_FACTORS = [
     key: 'overall_experience',
     label: 'Overall Experience',
     emoji: '🌟',
-    description: 'How satisfied are you with Praedico overall?',
+    description: 'How satisfied are you with InvestingLabAI overall?',
   },
   {
     key: 'ease_of_use',
@@ -63,7 +63,7 @@ export const FEEDBACK_FACTORS = [
     key: 'features_coverage',
     label: 'Features & Coverage',
     emoji: '🛠️',
-    description: 'Does Praedico cover all the features you need?',
+    description: 'Does InvestingLabAI cover all the features you need?',
   },
   {
     key: 'support_reliability',
@@ -392,7 +392,7 @@ export default function FeedbackModal({ portal }: FeedbackModalProps) {
                   Share Your Feedback
                 </DialogTitle>
                 <DialogDescription>
-                  Help us improve Praedico — every rating counts!
+                  Help us improve InvestingLabAI — every rating counts!
                 </DialogDescription>
               </DialogHeader>
 

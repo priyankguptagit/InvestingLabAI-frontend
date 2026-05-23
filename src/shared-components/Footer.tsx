@@ -44,7 +44,7 @@ export default function Footer({ variant = "public" }: FooterProps) {
             </Link>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
-              Empoweringgg the next generation of digital research with advanced
+              Empowering the next generation of digital research with advanced
               security, real-time analytics, and institutional-grade interfaces.
             </p>
 
