@@ -30,7 +30,7 @@ export default function UserFooter() {
           <div className="lg:col-span-4 space-y-4">
             <Link href="/" className="flex items-center gap-2 group">
               <Image
-                src="/praedico-logo.png"
+                src="/investinglabai.png"
                 alt="Praedico Logo"
                 width={36}
                 height={36}

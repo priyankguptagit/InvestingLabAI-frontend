@@ -210,8 +210,8 @@ export default function HiddenAdminLogin() {
                 {/* Logo Pedestal */}
                 <div className="relative p-4 rounded-3xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl">
                   <Image
-                    src="/praedico-logo.png"
-                    alt="Praedico Logo"
+                    src="/investinglabai.png"
+                    alt="InvestingLab AI Logo"
                     width={56}
                     height={56}
                     className="rounded-xl drop-shadow-xl"

@@ -32,7 +32,7 @@ export default function Footer({ variant = "public" }: FooterProps) {
           <div className="col-span-2 md:col-span-3 lg:col-span-4 space-y-5">
             <Link href="/" className="inline-flex items-center gap-2 group">
               <Image
-                src="/praedico-logo.png"
+                src="/investinglabai.png"
                 alt="Praedico Logo"
                 width={40}
                 height={40}

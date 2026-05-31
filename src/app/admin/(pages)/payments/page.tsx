@@ -120,7 +120,7 @@ function downloadInvoice(record: any) {
     </div>
   </div>
   <div class="footer">
-    InvestingLab AI · support@praedico.com<br/>
+    InvestingLab AI · investinglabai@gmail.com<br/>
     This is a computer-generated receipt and does not require a signature.
   </div>
 </div>
@@ -131,7 +131,7 @@ function downloadInvoice(record: any) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `praedico-invoice-${record._id?.toString().slice(-8)}.html`;
+  a.download = `investinglabai-invoice-${record._id?.toString().slice(-8)}.html`;
   a.click();
   URL.revokeObjectURL(url);
 }

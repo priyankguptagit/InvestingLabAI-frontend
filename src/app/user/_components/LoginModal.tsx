@@ -2,13 +2,34 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, UserCircle2, Trash2, ChevronRight, Bookmark, Zap } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  UserCircle2,
+  Trash2,
+  ChevronRight,
+  Bookmark,
+  Zap,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { authApi, organizationApi, coordinatorApi } from "@/lib/api";
-import { getSavedAccounts, saveAccount, removeSavedAccount, type SavedAccount } from "@/lib/savedAccounts";
+import {
+  getSavedAccounts,
+  saveAccount,
+  removeSavedAccount,
+  type SavedAccount,
+} from "@/lib/savedAccounts";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/shared-components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/shared-components/ui/dialog";
 import { Input } from "@/shared-components/ui/input";
 import { Button } from "@/shared-components/ui/button";
 import { Checkbox } from "@/shared-components/ui/checkbox";
@@ -31,12 +52,16 @@ interface PendingNavigation {
   route: string;
 }
 
-export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: LoginModalProps) {
+export default function LoginModal({
+  isOpen,
+  onClose,
+  onSwitchToRegister,
+}: LoginModalProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginMode, setLoginMode] = useState<'user' | 'organization'>('user');
+  const [loginMode, setLoginMode] = useState<"user" | "organization">("user");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -50,7 +75,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
   const [savePrompt, setSavePrompt] = useState<PendingNavigation | null>(null);
 
   // Session expiry message
-  const [sessionExpiredMsg, setSessionExpiredMsg] = useState<string | null>(null);
+  const [sessionExpiredMsg, setSessionExpiredMsg] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -65,7 +92,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
       const reason = sessionStorage.getItem("session_expired_reason");
       if (reason) {
         setSessionExpiredMsg(
-          "Your session expired due to inactivity. Please log in again."
+          "Your session expired due to inactivity. Please log in again.",
         );
         sessionStorage.removeItem("session_expired_reason");
       } else {
@@ -96,7 +123,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
     onClose();
     // Dispatch login_success so GlobalAuthListener (opened via open-login-modal event)
     // can intercept and do a hard redirect if needed.
-    window.dispatchEvent(new CustomEvent('login_success', { detail: { route } }));
+    window.dispatchEvent(
+      new CustomEvent("login_success", { detail: { route } }),
+    );
     router.push(route);
   };
 
@@ -112,7 +141,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
 
   const shouldPromptToSave = (email: string) => {
     return !savedAccounts.some(
-      (account) => account.email.toLowerCase() === email.toLowerCase()
+      (account) => account.email.toLowerCase() === email.toLowerCase(),
     );
   };
 
@@ -137,7 +166,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
     setError("");
 
     try {
-      if (loginMode === 'user') {
+      if (loginMode === "user") {
         const result = await authApi.login({
           email: formData.email,
           password: formData.password,
@@ -145,7 +174,13 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
         });
 
         const name = result.user?.name || formData.email.split("@")[0];
-        completeLogin({ email: formData.email, name, loginMode: "user", role: "user", route: "/user/dashboard" });
+        completeLogin({
+          email: formData.email,
+          name,
+          loginMode: "user",
+          role: "user",
+          route: "/user/dashboard",
+        });
       } else {
         try {
           const response = await organizationApi.login({
@@ -155,9 +190,15 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
           });
 
           const name = response.admin?.name || formData.email.split("@")[0];
-          completeLogin({ email: formData.email, name, loginMode: "organization", role: "org_admin", route: "/organization/dashboard" });
+          completeLogin({
+            email: formData.email,
+            name,
+            loginMode: "organization",
+            role: "org_admin",
+            route: "/organization/dashboard",
+          });
         } catch (orgError: any) {
-          console.log('Organization login failed:', orgError.response?.data);
+          console.log("Organization login failed:", orgError.response?.data);
           try {
             const coordResult = await coordinatorApi.login({
               email: formData.email,
@@ -165,34 +206,68 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
               rememberMe: formData.rememberMe,
             });
 
-            const name = coordResult.coordinator?.name || formData.email.split("@")[0];
-            completeLogin({ email: formData.email, name, loginMode: "organization", role: "coordinator", route: "/organization/coordinator/dashboard" });
+            const name =
+              coordResult.coordinator?.name || formData.email.split("@")[0];
+            completeLogin({
+              email: formData.email,
+              name,
+              loginMode: "organization",
+              role: "coordinator",
+              route: "/organization/coordinator/dashboard",
+            });
           } catch (coordError: any) {
-            console.log('Coordinator login also failed:', coordError.response?.data);
+            console.log(
+              "Coordinator login also failed:",
+              coordError.response?.data,
+            );
             throw coordError;
           }
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed. Please try again.");
+      setError(
+        err.response?.data?.message || "Login failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const getInitials = (name: string) =>
-    name.split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase();
+    name
+      .split(" ")
+      .map((n) => n.charAt(0))
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
 
   const getRoleBadge = (account: SavedAccount) => {
-    if (account.role === "coordinator") return { label: "Coordinator", color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800" };
-    if (account.role === "org_admin") return { label: "Org Admin", color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800" };
-    return { label: "Student", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800" };
+    if (account.role === "coordinator")
+      return {
+        label: "Coordinator",
+        color:
+          "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+      };
+    if (account.role === "org_admin")
+      return {
+        label: "Org Admin",
+        color:
+          "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+      };
+    return {
+      label: "Student",
+      color:
+        "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800",
+    };
   };
 
   return (
     <>
       {/* ─── Main Login Dialog ─── */}
-      <Dialog open={isOpen && !savePrompt} onOpenChange={(open) => !open && onClose()}>
+      <Dialog
+        open={isOpen && !savePrompt}
+        onOpenChange={(open) => !open && onClose()}
+      >
         <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 shadow-2xl rounded-2xl">
           <div className="h-1.5 w-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500" />
 
@@ -200,7 +275,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
             <DialogHeader className="text-center sm:text-center pb-6">
               <div className="mx-auto mb-4">
                 <Image
-                  src="/praedico-logo.png"
+                  src="/investinglabai.png"
                   alt="Praedico Logo"
                   width={64}
                   height={64}
@@ -218,8 +293,18 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
             {/* Session expiry notification */}
             {sessionExpiredMsg && (
               <div className="mb-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-800 dark:text-amber-300 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
-                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="h-4 w-4 shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 {sessionExpiredMsg}
               </div>
@@ -249,17 +334,25 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                       <div
                         key={account.email}
                         className="group flex items-center gap-3 p-3 rounded-xl border border-gray-200 dark:border-slate-800 hover:border-green-300 dark:hover:border-green-500/50 bg-gray-50/50 dark:bg-slate-900/50 hover:bg-green-50 dark:hover:bg-green-500/10 cursor-pointer transition-all duration-200 shadow-sm"
-                        onClick={() => !managingAccounts && handleSelectSavedAccount(account)}
+                        onClick={() =>
+                          !managingAccounts && handleSelectSavedAccount(account)
+                        }
                       >
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-semibold text-sm shadow-sm flex-shrink-0">
                           {getInitials(account.name)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{account.name}</p>
-                          <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">{account.email}</p>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {account.name}
+                          </p>
+                          <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">
+                            {account.email}
+                          </p>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${badge.color}`}>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${badge.color}`}
+                          >
                             {badge.label}
                           </span>
                           {managingAccounts ? (
@@ -267,7 +360,10 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                               variant="ghost"
                               size="icon"
                               className="h-7 w-7 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/20"
-                              onClick={(e) => { e.stopPropagation(); handleRemoveSavedAccount(account.email); }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveSavedAccount(account.email);
+                              }}
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
@@ -304,7 +400,11 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                     className="mb-4 h-auto p-0 flex items-center gap-1.5 text-xs font-medium text-green-600 hover:text-green-700"
                     onClick={() => {
                       setShowSavedAccounts(true);
-                      setFormData({ email: "", password: "", rememberMe: false });
+                      setFormData({
+                        email: "",
+                        password: "",
+                        rememberMe: false,
+                      });
                       setError("");
                     }}
                   >
@@ -316,12 +416,24 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                 <Tabs
                   defaultValue="user"
                   value={loginMode}
-                  onValueChange={(val) => setLoginMode(val as 'user' | 'organization')}
+                  onValueChange={(val) =>
+                    setLoginMode(val as "user" | "organization")
+                  }
                   className="w-full mb-6"
                 >
                   <TabsList className="grid w-full grid-cols-2 p-1 bg-gray-100 dark:bg-slate-900/80 rounded-lg">
-                    <TabsTrigger value="user" className="rounded-md font-medium text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-sm transition-all duration-200">User</TabsTrigger>
-                    <TabsTrigger value="organization" className="rounded-md font-medium text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm transition-all duration-200">Organization</TabsTrigger>
+                    <TabsTrigger
+                      value="user"
+                      className="rounded-md font-medium text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-green-600 dark:data-[state=active]:text-green-400 data-[state=active]:shadow-sm transition-all duration-200"
+                    >
+                      User
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="organization"
+                      className="rounded-md font-medium text-sm data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm transition-all duration-200"
+                    >
+                      Organization
+                    </TabsTrigger>
                   </TabsList>
                 </Tabs>
 
@@ -334,7 +446,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
 
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                    <Label htmlFor="email" className="text-sm font-medium">
+                      Email Address
+                    </Label>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-2.5 h-4 w-4 text-gray-400" />
                       <Input
@@ -343,7 +457,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                         placeholder="name@example.com"
                         required
                         value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
                         className="pl-10 pb-0 pt-0 h-11 bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 focus-visible:ring-1 focus-visible:ring-green-500 focus-visible:border-green-500 dark:focus-visible:ring-green-500 dark:focus-visible:border-green-500 transition-all rounded-lg"
                       />
                     </div>
@@ -351,7 +467,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                      <Label htmlFor="password" className="text-sm font-medium">
+                        Password
+                      </Label>
                       <Link
                         href="/forgot-password"
                         className="text-xs font-semibold text-green-600 hover:text-green-700 hover:underline transition-colors"
@@ -368,7 +486,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                         placeholder="••••••••"
                         required
                         value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, password: e.target.value })
+                        }
                         className="pl-10 pr-10 pb-0 pt-0 h-11 bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 focus-visible:ring-1 focus-visible:ring-green-500 focus-visible:border-green-500 dark:focus-visible:ring-green-500 dark:focus-visible:border-green-500 transition-all rounded-lg"
                       />
                       <Button
@@ -378,7 +498,11 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                         className="absolute right-1 top-1 h-9 w-9 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -388,10 +512,15 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                       <Checkbox
                         id="rememberMe"
                         checked={formData.rememberMe}
-                        onCheckedChange={(c) => setFormData({ ...formData, rememberMe: !!c })}
+                        onCheckedChange={(c) =>
+                          setFormData({ ...formData, rememberMe: !!c })
+                        }
                         className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
                       />
-                      <Label htmlFor="rememberMe" className="text-sm font-medium leading-none cursor-pointer">
+                      <Label
+                        htmlFor="rememberMe"
+                        className="text-sm font-medium leading-none cursor-pointer"
+                      >
                         Remember me
                       </Label>
                     </div>
@@ -413,13 +542,15 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
                   </Button>
                 </form>
 
-
                 <div className="mt-8 text-center text-sm text-gray-500">
                   Don't have an account?{" "}
                   <Button
                     variant="link"
                     className="p-0 h-auto font-semibold text-green-600 hover:text-green-700"
-                    onClick={() => { onClose(); onSwitchToRegister(); }}
+                    onClick={() => {
+                      onClose();
+                      onSwitchToRegister();
+                    }}
                   >
                     Create one
                   </Button>
@@ -431,8 +562,16 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
       </Dialog>
 
       {/* ─── Post-Login Save Account Prompt ─── */}
-      <Dialog open={!!savePrompt} onOpenChange={(open) => { if (!open && savePrompt) doNavigate(savePrompt.route); }}>
-        <DialogContent className="sm:max-w-sm p-0 overflow-hidden bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 shadow-2xl rounded-2xl" showCloseButton={false}>
+      <Dialog
+        open={!!savePrompt}
+        onOpenChange={(open) => {
+          if (!open && savePrompt) doNavigate(savePrompt.route);
+        }}
+      >
+        <DialogContent
+          className="sm:max-w-sm p-0 overflow-hidden bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 shadow-2xl rounded-2xl"
+          showCloseButton={false}
+        >
           <div className="h-1 w-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500" />
 
           <div className="p-6 text-center">
@@ -452,11 +591,20 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
             {savePrompt && (
               <div className="mt-4 mb-6 flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 text-left">
                 <div className="h-9 w-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
-                  {savePrompt.name.split(" ").map(n => n.charAt(0)).slice(0, 2).join("").toUpperCase()}
+                  {savePrompt.name
+                    .split(" ")
+                    .map((n) => n.charAt(0))
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{savePrompt.name}</p>
-                  <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">{savePrompt.email}</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                    {savePrompt.name}
+                  </p>
+                  <p className="text-[11px] text-gray-500 dark:text-slate-400 truncate">
+                    {savePrompt.email}
+                  </p>
                 </div>
               </div>
             )}
@@ -479,7 +627,8 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }: Logi
             </div>
 
             <p className="mt-4 text-[11px] text-gray-400 dark:text-slate-500">
-              Only your name &amp; email are stored locally — never your password.
+              Only your name &amp; email are stored locally — never your
+              password.
             </p>
           </div>
         </DialogContent>

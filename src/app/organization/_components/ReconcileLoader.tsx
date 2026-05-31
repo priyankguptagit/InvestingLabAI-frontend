@@ -37,7 +37,7 @@ export function ReconcileLoader({
         {/* Logo with pulsing glow */}
         <div className="relative w-24 h-24 mb-6 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(99,102,241,0.4)] animate-pulse-slow">
           <Image
-            src="/praedico-logo.png"
+            src="/investinglabai.png"
             alt="InvestingLab AI"
             fill
             className="object-contain bg-white"

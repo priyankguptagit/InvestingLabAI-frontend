@@ -382,7 +382,7 @@ const SidebarHeader = memo(
             <div className="absolute -inset-3 bg-indigo-500/20 rounded-full blur-xl opacity-0 group-hover/header:opacity-100 transition-opacity duration-700" />
             <div className="relative h-11 w-11 rounded-2xl flex items-center justify-center">
               <Image
-                src="/praedico-logo.png"
+                src="/investinglabai.png"
                 alt="Praedico Logo"
                 width={44}
                 height={44}
