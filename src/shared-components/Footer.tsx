@@ -33,13 +33,13 @@ export default function Footer({ variant = "public" }: FooterProps) {
             <Link href="/" className="inline-flex items-center gap-2 group">
               <Image
                 src="/investinglabai.png"
-                alt="Praedico Logo"
+                alt="InvestingLab AI Logo"
                 width={40}
                 height={40}
                 className="rounded-xl group-hover:scale-110 transition-transform duration-300"
               />
               <span className="text-2xl font-bold tracking-tight text-white">
-                Praedico
+                InvestingLab AI
               </span>
             </Link>
 
