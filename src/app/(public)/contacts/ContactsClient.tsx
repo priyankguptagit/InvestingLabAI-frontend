@@ -217,7 +217,7 @@ export default function ContactsClient() {
                       Email Us
                     </p>
                     <p className="text-base font-bold text-white">
-                      support@stocksphere.com
+                      investinglabai@gmail.com
                     </p>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function ContactsClient() {
                       Call Us
                     </p>
                     <p className="text-base font-bold text-white">
-                      +91 98765 43210
+                      +91 9009054508
                     </p>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ export default function ContactsClient() {
                 Our friendly team is here to help with all your inquiries.
               </p>
               <p className="text-lg font-black text-indigo-400 tracking-tight">
-                support@stocksphere.com
+                investinglabai@gmail.com
               </p>
             </CardContent>
           </Card>
@@ -634,7 +634,7 @@ export default function ContactsClient() {
                         type="email"
                         pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
                         title="Please enter a valid email address"
-                        placeholder="e.g. support@stocksphere.com"
+                        placeholder="e.g. investinglabai@gmail.com"
                         value={formData.email}
                         onChange={(e) =>
                           setFormData({
