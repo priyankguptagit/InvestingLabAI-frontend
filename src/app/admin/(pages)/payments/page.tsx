@@ -3,8 +3,16 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  CreditCard, Search, RefreshCcw, ChevronLeft, ChevronRight,
-  CheckCircle2, XCircle, Clock, Download, IndianRupee,
+  CreditCard,
+  Search,
+  RefreshCcw,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Download,
+  IndianRupee,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { paymentApi } from "@/lib/api/payment.api";
@@ -12,33 +20,56 @@ import { paymentApi } from "@/lib/api/payment.api";
 // ── helpers ──────────────────────────────────────────────────────────────────
 const toRupees = (paise: number) => (paise / 100).toLocaleString("en-IN");
 
-const STATUS_META: Record<string, { label: string; color: string; icon: LucideIcon }> = {
-  paid:    { label: "Paid",    color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20", icon: CheckCircle2 },
-  created: { label: "Pending", color: "text-amber-400  bg-amber-500/10  border-amber-500/20",  icon: Clock },
-  failed:  { label: "Failed",  color: "text-rose-400   bg-rose-500/10   border-rose-500/20",   icon: XCircle },
+const STATUS_META: Record<
+  string,
+  { label: string; color: string; icon: LucideIcon }
+> = {
+  paid: {
+    label: "Paid",
+    color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    icon: CheckCircle2,
+  },
+  created: {
+    label: "Pending",
+    color: "text-amber-400  bg-amber-500/10  border-amber-500/20",
+    icon: Clock,
+  },
+  failed: {
+    label: "Failed",
+    color: "text-rose-400   bg-rose-500/10   border-rose-500/20",
+    icon: XCircle,
+  },
 };
 
 const PLAN_COLORS: Record<string, string> = {
-  Silver:  "text-slate-300 bg-slate-500/10 border-slate-500/20",
-  Gold:    "text-amber-400 bg-amber-500/10 border-amber-500/20",
+  Silver: "text-slate-300 bg-slate-500/10 border-slate-500/20",
+  Gold: "text-amber-400 bg-amber-500/10 border-amber-500/20",
   Diamond: "text-violet-400 bg-violet-500/10 border-violet-500/20",
 };
 
 // ── invoice generator ────────────────────────────────────────────────────────
 function downloadInvoice(record: any) {
-  const amountRs = (record.amountPaise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2 });
+  const amountRs = (record.amountPaise / 100).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+  });
   const date = new Date(record.createdAt).toLocaleDateString("en-IN", {
-    day: "numeric", month: "long", year: "numeric",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
   const expiryStr = record.expiresAt
-    ? new Date(record.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+    ? new Date(record.expiresAt).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
     : "N/A";
 
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>Invoice – Praedico Global Research</title>
+<title>Invoice – InvestingLab AI</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: 'Segoe UI', sans-serif; background:#f8f9fe; color:#1e293b; padding:40px; }
@@ -62,7 +93,7 @@ function downloadInvoice(record: any) {
 <body>
 <div class="container">
   <div class="header">
-    <h1>Praedico Global Research</h1>
+    <h1>InvestingLab AI</h1>
     <p>Tax Invoice / Payment Receipt</p>
     <div class="badge">INVOICE #${record._id?.toString().slice(-8).toUpperCase()}</div>
   </div>
@@ -73,7 +104,7 @@ function downloadInvoice(record: any) {
     <div class="row"><span class="label">Duration</span><span class="value">${record.duration} Month${record.duration > 1 ? "s" : ""}</span></div>
     <div class="row"><span class="label">Access Valid Until</span><span class="value">${expiryStr}</span></div>
     ${record.referralCode ? `<div class="row"><span class="label">Referral Code Applied</span><span class="value">${record.referralCode}</span></div>` : ""}
-    ${record.discountPaise ? `<div class="row"><span class="label">Discount</span><span class="value" style="color:#16a34a">−₹${(record.discountPaise/100).toLocaleString("en-IN",{minimumFractionDigits:2})}</span></div>` : ""}
+    ${record.discountPaise ? `<div class="row"><span class="label">Discount</span><span class="value" style="color:#16a34a">−₹${(record.discountPaise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span></div>` : ""}
     <div class="row"><span class="label">Payment ID</span><span class="value" style="font-family:monospace;font-size:12px">${record.razorpayPaymentId || "N/A"}</span></div>
     <div class="row"><span class="label">Status</span><span class="chip">PAID</span></div>
 
@@ -89,7 +120,7 @@ function downloadInvoice(record: any) {
     </div>
   </div>
   <div class="footer">
-    Praedico Global Research · support@praedico.com<br/>
+    InvestingLab AI · support@praedico.com<br/>
     This is a computer-generated receipt and does not require a signature.
   </div>
 </div>
@@ -97,9 +128,9 @@ function downloadInvoice(record: any) {
 </html>`;
 
   const blob = new Blob([html], { type: "text/html" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href     = url;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
   a.download = `praedico-invoice-${record._id?.toString().slice(-8)}.html`;
   a.click();
   URL.revokeObjectURL(url);
@@ -107,12 +138,12 @@ function downloadInvoice(record: any) {
 
 // ── page component ────────────────────────────────────────────────────────────
 export default function AdminPaymentHistoryPage() {
-  const [records, setRecords]   = useState<any[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [search,  setSearch]    = useState("");
-  const [page,    setPage]      = useState(1);
-  const [total,   setTotal]     = useState(0);
-  const [pages,   setPages]     = useState(1);
+  const [records, setRecords] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [pages, setPages] = useState(1);
   const LIMIT = 20;
 
   const fetchHistory = async (p = 1) => {
@@ -132,7 +163,9 @@ export default function AdminPaymentHistoryPage() {
     }
   };
 
-  useEffect(() => { fetchHistory(1); }, []);
+  useEffect(() => {
+    fetchHistory(1);
+  }, []);
 
   // client-side search filter
   const filtered = records.filter((r) => {
@@ -140,24 +173,30 @@ export default function AdminPaymentHistoryPage() {
     return (
       r.planName?.toLowerCase().includes(q) ||
       r.status?.toLowerCase().includes(q) ||
-      (r.userId?.name  || "").toLowerCase().includes(q) ||
+      (r.userId?.name || "").toLowerCase().includes(q) ||
       (r.userId?.email || "").toLowerCase().includes(q) ||
       (r.razorpayPaymentId || "").toLowerCase().includes(q)
     );
   });
 
   // metrics
-  const paidRecords  = records.filter((r) => r.status === "paid");
-  const totalRevenue = paidRecords.reduce((s, r) => s + (r.amountPaise || 0), 0);
+  const paidRecords = records.filter((r) => r.status === "paid");
+  const totalRevenue = paidRecords.reduce(
+    (s, r) => s + (r.amountPaise || 0),
+    0,
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700 p-6 lg:p-8 pb-10 text-slate-200 w-full max-w-7xl mx-auto">
-
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white">Payment History</h1>
-          <p className="text-slate-400 text-sm mt-1">Full ledger of all Razorpay transactions.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
+            Payment History
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">
+            Full ledger of all Razorpay transactions.
+          </p>
         </div>
         <button
           onClick={() => fetchHistory(page)}
@@ -169,27 +208,55 @@ export default function AdminPaymentHistoryPage() {
 
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        {([
-          { label: "Total Transactions", value: total.toString(), icon: CreditCard, color: "#6366f1" },
-          { label: "Successful Payments", value: paidRecords.length.toString(), icon: CheckCircle2, color: "#10b981" },
-          { label: "Total Revenue", value: `₹${toRupees(totalRevenue)}`, icon: IndianRupee, color: "#f59e0b" },
-        ] as Array<{ label: string; value: string; icon: LucideIcon; color: string }>).map((m) => {
+        {(
+          [
+            {
+              label: "Total Transactions",
+              value: total.toString(),
+              icon: CreditCard,
+              color: "#6366f1",
+            },
+            {
+              label: "Successful Payments",
+              value: paidRecords.length.toString(),
+              icon: CheckCircle2,
+              color: "#10b981",
+            },
+            {
+              label: "Total Revenue",
+              value: `₹${toRupees(totalRevenue)}`,
+              icon: IndianRupee,
+              color: "#f59e0b",
+            },
+          ] as Array<{
+            label: string;
+            value: string;
+            icon: LucideIcon;
+            color: string;
+          }>
+        ).map((m) => {
           const MetricIcon = m.icon;
           return (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 flex items-center gap-4"
-          >
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: `${m.color}20`, border: `1px solid ${m.color}40` }}>
-              <MetricIcon className="w-5 h-5" style={{ color: m.color }} />
-            </div>
-            <div>
-              <p className="text-slate-400 text-xs font-medium">{m.label}</p>
-              <p className="text-white text-xl font-bold">{m.value}</p>
-            </div>
-          </motion.div>
+            <motion.div
+              key={m.label}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 flex items-center gap-4"
+            >
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: `${m.color}20`,
+                  border: `1px solid ${m.color}40`,
+                }}
+              >
+                <MetricIcon className="w-5 h-5" style={{ color: m.color }} />
+              </div>
+              <div>
+                <p className="text-slate-400 text-xs font-medium">{m.label}</p>
+                <p className="text-white text-xl font-bold">{m.value}</p>
+              </div>
+            </motion.div>
           );
         })}
       </div>
@@ -208,14 +275,20 @@ export default function AdminPaymentHistoryPage() {
               className="w-full pl-9 pr-4 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
           </div>
-          <span className="text-slate-500 text-xs ml-auto">{filtered.length} records</span>
+          <span className="text-slate-500 text-xs ml-auto">
+            {filtered.length} records
+          </span>
         </div>
 
         {/* Table */}
         {loading ? (
-          <div className="text-center py-16 text-slate-500">Loading transactions…</div>
+          <div className="text-center py-16 text-slate-500">
+            Loading transactions…
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">No payment records found.</div>
+          <div className="text-center py-16 text-slate-500">
+            No payment records found.
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
@@ -223,29 +296,54 @@ export default function AdminPaymentHistoryPage() {
                 <tr className="border-b border-slate-800">
                   <th className="h-10 px-5 text-slate-400 font-medium">Date</th>
                   <th className="h-10 px-5 text-slate-400 font-medium">User</th>
-                  <th className="h-10 px-5 text-slate-400 font-medium text-center">Plan</th>
-                  <th className="h-10 px-5 text-slate-400 font-medium text-center">Duration</th>
-                  <th className="h-10 px-5 text-slate-400 font-medium text-right">Amount</th>
-                  <th className="h-10 px-5 text-slate-400 font-medium text-center">Status</th>
-                  <th className="h-10 px-5 text-slate-400 font-medium text-right">Invoice</th>
+                  <th className="h-10 px-5 text-slate-400 font-medium text-center">
+                    Plan
+                  </th>
+                  <th className="h-10 px-5 text-slate-400 font-medium text-center">
+                    Duration
+                  </th>
+                  <th className="h-10 px-5 text-slate-400 font-medium text-right">
+                    Amount
+                  </th>
+                  <th className="h-10 px-5 text-slate-400 font-medium text-center">
+                    Status
+                  </th>
+                  <th className="h-10 px-5 text-slate-400 font-medium text-right">
+                    Invoice
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((r, i) => {
                   const sm = STATUS_META[r.status] ?? STATUS_META.created;
                   const StatusIcon = sm.icon;
-                  const planColor = PLAN_COLORS[r.planName] ?? "text-slate-300 bg-slate-500/10 border-slate-500/20";
+                  const planColor =
+                    PLAN_COLORS[r.planName] ??
+                    "text-slate-300 bg-slate-500/10 border-slate-500/20";
                   return (
-                    <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors last:border-0">
+                    <tr
+                      key={i}
+                      className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors last:border-0"
+                    >
                       <td className="px-5 py-3.5 text-slate-400 whitespace-nowrap">
-                        {new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                        {new Date(r.createdAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                       </td>
                       <td className="px-5 py-3.5">
-                        <p className="font-medium text-white">{r.userId?.name || "Unknown"}</p>
-                        <p className="text-xs text-slate-500">{r.userId?.email || "—"}</p>
+                        <p className="font-medium text-white">
+                          {r.userId?.name || "Unknown"}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {r.userId?.email || "—"}
+                        </p>
                       </td>
                       <td className="px-5 py-3.5 text-center">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border ${planColor}`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold border ${planColor}`}
+                        >
                           {r.planName}
                         </span>
                       </td>
@@ -255,11 +353,15 @@ export default function AdminPaymentHistoryPage() {
                       <td className="px-5 py-3.5 text-right font-semibold text-white">
                         ₹{toRupees(r.amountPaise || 0)}
                         {r.discountPaise > 0 && (
-                          <div className="text-[10px] text-emerald-400">−₹{toRupees(r.discountPaise)} off</div>
+                          <div className="text-[10px] text-emerald-400">
+                            −₹{toRupees(r.discountPaise)} off
+                          </div>
                         )}
                       </td>
                       <td className="px-5 py-3.5 text-center">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${sm.color}`}>
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${sm.color}`}
+                        >
                           <StatusIcon className="w-3 h-3" /> {sm.label}
                         </span>
                       </td>

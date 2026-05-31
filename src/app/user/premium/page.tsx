@@ -1,7 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, Zap, Crown, Shield, Rocket, Sparkles, Clock, ArrowRight, BadgeCheck } from "lucide-react";
+import {
+  Check,
+  Zap,
+  Crown,
+  Shield,
+  Rocket,
+  Sparkles,
+  Clock,
+  ArrowRight,
+  BadgeCheck,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import Premium3DBackground from "../_components/Premium3DBackground";
 import { authApi } from "@/lib/api";
@@ -22,7 +32,7 @@ const DURATIONS: Duration[] = [1, 3, 6];
 export default function PremiumPage() {
   const [duration, setDuration] = useState<Duration>(1);
   const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);  // page-level loading guard
+  const [isLoading, setIsLoading] = useState(true); // page-level loading guard
   const [currentPlan, setCurrentPlan] = useState<string>("Free");
   const [expiryDate, setExpiryDate] = useState<string | null>(null);
   const [hasUsedTrial, setHasUsedTrial] = useState(false);
@@ -32,8 +42,13 @@ export default function PremiumPage() {
 
   // Referral Code States
   const [referralCode, setReferralCode] = useState("");
-  const [appliedReferral, setAppliedReferral] = useState<{code: string, discountPercent: number} | null>(null);
-  const [referralStatus, setReferralStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [appliedReferral, setAppliedReferral] = useState<{
+    code: string;
+    discountPercent: number;
+  } | null>(null);
+  const [referralStatus, setReferralStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
   const [referralMessage, setReferralMessage] = useState("");
 
   // Extra user data for member view
@@ -47,12 +62,16 @@ export default function PremiumPage() {
 
   // Post-payment invoice modal
   const [postPayment, setPostPayment] = useState<{
-    planName: PlanName; duration: Duration;
-    amountPaid: number; paymentId: string; expiresAt: string;
+    planName: PlanName;
+    duration: Duration;
+    amountPaid: number;
+    paymentId: string;
+    expiresAt: string;
   } | null>(null);
 
   // Is the subscription currently active (paid) or on trial?
-  const isPaidActive = currentPlan !== "Free" && subscriptionStatus === "active" && !isOnTrial;
+  const isPaidActive =
+    currentPlan !== "Free" && subscriptionStatus === "active" && !isOnTrial;
   const isActivePlan = currentPlan !== "Free" || isOnTrial;
   const canSelfUpgrade = !isOrgStudent || currentPlan === "Free";
 
@@ -72,9 +91,16 @@ export default function PremiumPage() {
           setOrgName(data.user.orgName || "");
           setUserName(data.user.name || "");
           if (data.user.subscriptionExpiry) {
-            setExpiryDate(new Date(data.user.subscriptionExpiry).toLocaleDateString("en-IN", {
-              day: "numeric", month: "long", year: "numeric"
-            }));
+            setExpiryDate(
+              new Date(data.user.subscriptionExpiry).toLocaleDateString(
+                "en-IN",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                },
+              ),
+            );
           }
         }
       } catch (e) {
@@ -96,7 +122,10 @@ export default function PremiumPage() {
     try {
       const data = await referralApi.validateCode(referralCode.trim());
       if (data.success) {
-        setAppliedReferral({ code: referralCode.trim(), discountPercent: data.discountPercent });
+        setAppliedReferral({
+          code: referralCode.trim(),
+          discountPercent: data.discountPercent,
+        });
         setReferralStatus("success");
         setReferralMessage(data.message);
       } else {
@@ -105,7 +134,9 @@ export default function PremiumPage() {
       }
     } catch (err: any) {
       setReferralStatus("error");
-      setReferralMessage(err.response?.data?.message || "Invalid referral code");
+      setReferralMessage(
+        err.response?.data?.message || "Invalid referral code",
+      );
     }
   };
 
@@ -144,7 +175,11 @@ export default function PremiumPage() {
     const planName = checkoutPlan!;
 
     try {
-      const data = await paymentApi.createOrder(planName, duration, appliedReferral?.code);
+      const data = await paymentApi.createOrder(
+        planName,
+        duration,
+        appliedReferral?.code,
+      );
       if (!data.success) {
         alert("Order creation failed: " + data.message);
         setLoading(false);
@@ -156,7 +191,7 @@ export default function PremiumPage() {
         amount: data.amount,
         currency: "INR",
         order_id: data.orderId,
-        name: "Praedico Global Research",
+        name: "InvestingLab AI",
         description: `${planName} Plan — ${DURATION_LABELS[duration]}`,
         image: "/logo.png",
         handler: async (response: any) => {
@@ -173,10 +208,15 @@ export default function PremiumPage() {
               const exp = new Date();
               exp.setMonth(exp.getMonth() + duration);
               setPostPayment({
-                planName, duration,
+                planName,
+                duration,
                 amountPaid: data.amount / 100,
                 paymentId: response.razorpay_payment_id,
-                expiresAt: exp.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }),
+                expiresAt: exp.toLocaleDateString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }),
               });
             } else {
               alert("Payment verification failed. Contact support.");
@@ -194,7 +234,10 @@ export default function PremiumPage() {
       setCheckoutPlan(null); // close modal when Razorpay opens
       setLoading(false);
     } catch (error: any) {
-      const msg = error.response?.data?.message || error.message || "Something went wrong.";
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong.";
       alert(`Payment failed: ${msg}`);
       setLoading(false);
     }
@@ -243,7 +286,10 @@ export default function PremiumPage() {
         {postPayment && (
           <PostPaymentModal
             isOpen={true}
-            onClose={() => { setPostPayment(null); window.location.reload(); }}
+            onClose={() => {
+              setPostPayment(null);
+              window.location.reload();
+            }}
             {...postPayment}
           />
         )}
@@ -258,7 +304,6 @@ export default function PremiumPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-
         {/* ── Trial expired banner ──────────────────────── */}
         {hasUsedTrial && !isOnTrial && currentPlan === "Free" && (
           <motion.div
@@ -277,11 +322,17 @@ export default function PremiumPage() {
                     Trial Period Finished
                     <span className="flex h-2 w-2 rounded-full bg-white/50 animate-pulse" />
                   </p>
-                  <p className="text-orange-50 text-xs mt-0.5 font-medium">Subscribe now to regain premium access</p>
+                  <p className="text-orange-50 text-xs mt-0.5 font-medium">
+                    Subscribe now to regain premium access
+                  </p>
                 </div>
               </div>
               <button
-                onClick={() => document.getElementById("pricing-section")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document
+                    .getElementById("pricing-section")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="bg-white text-rose-600 text-xs font-bold px-4 py-2 rounded-lg hover:bg-rose-50 transition-colors shadow-sm"
               >
                 Pick a Plan
@@ -308,12 +359,18 @@ export default function PremiumPage() {
                     {currentPlan} Trial Active
                     <span className="flex h-2 w-2 rounded-full bg-green-400 animate-pulse ring-2 ring-white/20" />
                   </p>
-                  <p className="text-indigo-100/80 text-xs mt-0.5 font-medium">Full premium access unlocked</p>
+                  <p className="text-indigo-100/80 text-xs mt-0.5 font-medium">
+                    Full premium access unlocked
+                  </p>
                 </div>
               </div>
               <div className="text-right pl-4 border-l border-white/10">
-                <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider mb-0.5">Trial Ends</p>
-                <p className="text-sm font-bold text-white tabular-nums">{expiryDate}</p>
+                <p className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider mb-0.5">
+                  Trial Ends
+                </p>
+                <p className="text-sm font-bold text-white tabular-nums">
+                  {expiryDate}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -344,13 +401,14 @@ export default function PremiumPage() {
           </h1>
 
           <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed font-medium mb-8">
-            One payment. Real access. No subscriptions, no auto-renewals, no surprises —
-            just premium trading intelligence for as long as you need it.
+            One payment. Real access. No subscriptions, no auto-renewals, no
+            surprises — just premium trading intelligence for as long as you
+            need it.
           </p>
 
           {/* ── Referral Code Input ───────────────────── */}
           {canSelfUpgrade && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -361,14 +419,20 @@ export default function PremiumPage() {
                   type="text"
                   placeholder="Referral Code?"
                   value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  disabled={appliedReferral !== null || referralStatus === "loading"}
+                  onChange={(e) =>
+                    setReferralCode(e.target.value.toUpperCase())
+                  }
+                  disabled={
+                    appliedReferral !== null || referralStatus === "loading"
+                  }
                   className="w-full flex-1 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 uppercase"
                 />
                 {!appliedReferral ? (
                   <button
                     onClick={handleValidateReferral}
-                    disabled={referralStatus === "loading" || !referralCode.trim()}
+                    disabled={
+                      referralStatus === "loading" || !referralCode.trim()
+                    }
                     className="w-full sm:w-auto shrink-0 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold hover:bg-slate-800 dark:hover:bg-slate-100 disabled:opacity-50 transition-colors"
                   >
                     {referralStatus === "loading" ? "Validating..." : "Apply"}
@@ -383,7 +447,9 @@ export default function PremiumPage() {
                 )}
               </div>
               {referralMessage && (
-                <p className={`text-xs font-bold mt-3 ${referralStatus === "success" ? "text-emerald-500" : "text-rose-500"}`}>
+                <p
+                  className={`text-xs font-bold mt-3 ${referralStatus === "success" ? "text-emerald-500" : "text-rose-500"}`}
+                >
                   {referralMessage}
                 </p>
               )}
@@ -422,18 +488,30 @@ export default function PremiumPage() {
         >
           <div className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl rounded-2xl p-6 border border-white/50 dark:border-white/10 shadow-xl shadow-indigo-500/5 flex flex-col md:flex-row items-center justify-between gap-6 ring-1 ring-slate-900/5 dark:ring-white/10">
             <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                currentPlan === "Free"
-                  ? "bg-slate-100 dark:bg-slate-800 text-slate-500"
-                  : "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
-              }`}>
-                {currentPlan === "Free" ? <Shield size={24} /> : <Crown size={24} className="fill-current" />}
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  currentPlan === "Free"
+                    ? "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                    : "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
+                }`}
+              >
+                {currentPlan === "Free" ? (
+                  <Shield size={24} />
+                ) : (
+                  <Crown size={24} className="fill-current" />
+                )}
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Current Plan</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  Current Plan
+                </p>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   {currentPlan} Membership
-                  {isOnTrial && <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">(Trial)</span>}
+                  {isOnTrial && (
+                    <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold">
+                      (Trial)
+                    </span>
+                  )}
                   {isOrgStudent && (
                     <span className="text-indigo-600 dark:text-indigo-400 text-sm bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">
                       Managed by {orgName}
@@ -444,8 +522,12 @@ export default function PremiumPage() {
             </div>
             {expiryDate && currentPlan !== "Free" && (
               <div className="text-right">
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Access Until</p>
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{expiryDate}</p>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  Access Until
+                </p>
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  {expiryDate}
+                </p>
               </div>
             )}
           </div>
@@ -466,14 +548,24 @@ export default function PremiumPage() {
 
         {/* ── Pricing cards ─────────────────────────────── */}
         {canSelfUpgrade && (
-          <div id="pricing-section" className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div
+            id="pricing-section"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
             <PricingCard
               title="Silver"
               price={PLAN_PRICES.Silver[duration]}
               discountPercent={appliedReferral?.discountPercent}
               duration={duration}
               desc="Essential tools to start your trading journey."
-              features={["Basic News & ETFs", "₹1 Lac Virtual Balance", "Basic Paper Trading", "Trading Level Badge", "No News Based AI Analysis", "No Certificate"]}
+              features={[
+                "Basic News & ETFs",
+                "₹1 Lac Virtual Balance",
+                "Basic Paper Trading",
+                "Trading Level Badge",
+                "No News Based AI Analysis",
+                "No Certificate",
+              ]}
               icon={Zap}
               delay={0.4}
               currentPlan={currentPlan}
@@ -490,14 +582,14 @@ export default function PremiumPage() {
               duration={duration}
               desc="Advanced insights for the serious trader."
               features={[
-                'Premium News Feed',
-                'Virtual Amount - 5 Lac', 
-                'News Based AI analysis - 5 times/month', 
-                'Certificate', 
-                'Paper investment portal', 
-                'ChatBot - token 10k', 
-                'AI Based Analysis - 2 times in a month', 
-                'News & Shares Price'
+                "Premium News Feed",
+                "Virtual Amount - 5 Lac",
+                "News Based AI analysis - 5 times/month",
+                "Certificate",
+                "Paper investment portal",
+                "ChatBot - token 10k",
+                "AI Based Analysis - 2 times in a month",
+                "News & Shares Price",
               ]}
               icon={Rocket}
               highlight
@@ -516,15 +608,15 @@ export default function PremiumPage() {
               duration={duration}
               desc="Full power for ambitious learners."
               features={[
-                'Real-Time Data Feed', 
-                'Virtual Amount - 10 Lac', 
-                'News Based AI Analysis - 10/month', 
-                'Certificate', 
-                'Paper investment portal', 
-                'ChatBot - token 20k', 
-                'AI Based Analysis - 4 times in a month', 
-                'News, Shares & ETF Price', 
-                '1:1 doubt clearing session with experts - 2 times/month'
+                "Real-Time Data Feed",
+                "Virtual Amount - 10 Lac",
+                "News Based AI Analysis - 10/month",
+                "Certificate",
+                "Paper investment portal",
+                "ChatBot - token 20k",
+                "AI Based Analysis - 4 times in a month",
+                "News, Shares & ETF Price",
+                "1:1 doubt clearing session with experts - 2 times/month",
               ]}
               icon={Crown}
               delay={0.6}
@@ -575,7 +667,10 @@ export default function PremiumPage() {
       {postPayment && (
         <PostPaymentModal
           isOpen={true}
-          onClose={() => { setPostPayment(null); window.location.reload(); }}
+          onClose={() => {
+            setPostPayment(null);
+            window.location.reload();
+          }}
           {...postPayment}
         />
       )}
@@ -604,12 +699,26 @@ interface PricingCardProps {
 }
 
 function PricingCard({
-  title, price, discountPercent, duration, desc, features, icon: Icon, highlight,
-  delay, currentPlan, showTrialCTA, loading, onSubscribe, onTrial,
+  title,
+  price,
+  discountPercent,
+  duration,
+  desc,
+  features,
+  icon: Icon,
+  highlight,
+  delay,
+  currentPlan,
+  showTrialCTA,
+  loading,
+  onSubscribe,
+  onTrial,
 }: PricingCardProps) {
   const isCurrent = currentPlan === title;
-  const finalPrice = discountPercent ? price - Math.floor((price * discountPercent) / 100) : price;
-  
+  const finalPrice = discountPercent
+    ? price - Math.floor((price * discountPercent) / 100)
+    : price;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -628,31 +737,50 @@ function PricingCard({
           </div>
         )}
 
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ml-1 transition-colors duration-300 ${
-          highlight
-            ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400"
-            : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-        }`}>
+        <div
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 ml-1 transition-colors duration-300 ${
+            highlight
+              ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400"
+              : "bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+          }`}
+        >
           <Icon size={24} />
         </div>
 
-        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{title}</h3>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 h-10">{desc}</p>
+        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+          {title}
+        </h3>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 h-10">
+          {desc}
+        </p>
 
         {/* Price display */}
         <div className="flex items-baseline gap-1 mb-2">
           {discountPercent ? (
             <div className="flex flex-col">
-              <span className="text-sm font-bold text-slate-400 line-through decoration-rose-500 decoration-2">₹{price.toLocaleString("en-IN")}</span>
+              <span className="text-sm font-bold text-slate-400 line-through decoration-rose-500 decoration-2">
+                ₹{price.toLocaleString("en-IN")}
+              </span>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">₹{(price - Math.floor((price * discountPercent) / 100)).toLocaleString("en-IN")}</span>
-                <span className="text-slate-400 font-medium">/{DURATION_LABELS[duration].toLowerCase()}</span>
+                <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                  ₹
+                  {(
+                    price - Math.floor((price * discountPercent) / 100)
+                  ).toLocaleString("en-IN")}
+                </span>
+                <span className="text-slate-400 font-medium">
+                  /{DURATION_LABELS[duration].toLowerCase()}
+                </span>
               </div>
             </div>
           ) : (
             <>
-              <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">₹{price.toLocaleString("en-IN")}</span>
-              <span className="text-slate-400 font-medium">/{DURATION_LABELS[duration].toLowerCase()}</span>
+              <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                ₹{price.toLocaleString("en-IN")}
+              </span>
+              <span className="text-slate-400 font-medium">
+                /{DURATION_LABELS[duration].toLowerCase()}
+              </span>
             </>
           )}
         </div>
@@ -660,7 +788,8 @@ function PricingCard({
         {/* Per-month breakdown for longer plans */}
         {duration > 1 && (
           <p className="text-xs text-emerald-600 font-semibold mb-6">
-            ₹{Math.round(finalPrice / duration).toLocaleString("en-IN")}/mo · {DURATION_SAVINGS[duration]}
+            ₹{Math.round(finalPrice / duration).toLocaleString("en-IN")}/mo ·{" "}
+            {DURATION_SAVINGS[duration]}
           </p>
         )}
         {duration === 1 && <div className="mb-6" />}

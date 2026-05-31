@@ -132,7 +132,7 @@ export default function Footer({ variant = "public" }: FooterProps) {
         >
           <div className="flex flex-col gap-2">
             <p className="text-xs text-slate-500 font-medium tracking-wide">
-              © 2026 Praedico Global Research Systems. All rights reserved.
+              © 2026 InvestingLab AI. All rights reserved.
             </p>
             {isPublic && (
               <div className="flex gap-4 text-[10px] text-slate-600 font-bold uppercase tracking-widest">
@@ -168,7 +168,7 @@ export default function Footer({ variant = "public" }: FooterProps) {
             <span
               className={`${isPublic ? "text-[11px]" : "text-xs"} font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-pink-400 group-hover:from-indigo-300 group-hover:to-pink-300 transition-all`}
             >
-              Arjun, Sambhav &amp; Unnati
+              investinglabai.com
             </span>
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 animate-pulse flex-shrink-0" />
           </div>

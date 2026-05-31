@@ -1,7 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, Download, X, Calendar, CreditCard, Package } from "lucide-react";
+import {
+  CheckCircle2,
+  Download,
+  X,
+  Calendar,
+  CreditCard,
+  Package,
+} from "lucide-react";
 import type { PlanName, Duration } from "@/config/pricing.config";
 import { DURATION_LABELS } from "@/config/pricing.config";
 
@@ -16,8 +23,8 @@ interface PostPaymentModalProps {
 }
 
 const PLAN_COLOR: Record<PlanName, string> = {
-  Silver:  "#94a3b8",
-  Gold:    "#f59e0b",
+  Silver: "#94a3b8",
+  Gold: "#f59e0b",
   Diamond: "#a78bfa",
 };
 
@@ -45,7 +52,7 @@ body{font-family:'Segoe UI',sans-serif;background:#f8f9fe;padding:40px;color:#1e
 </style></head><body>
 <div class="box">
   <div class="hdr">
-    <h1>Praedico Global Research</h1>
+    <h1>InvestingLab AI</h1>
     <p>Tax Invoice / Payment Receipt</p>
     <div class="inv">INVOICE #${p.paymentId.slice(-8).toUpperCase()}</div>
   </div>
@@ -62,7 +69,7 @@ body{font-family:'Segoe UI',sans-serif;background:#f8f9fe;padding:40px;color:#1e
       <div style="text-align:right;font-size:11px;color:#64748b"><div>One-time payment</div><div>No auto-renewal</div></div>
     </div>
   </div>
-  <div class="ftr">Praedico Global Research · support@praedico.com<br/>Computer-generated receipt — no signature required.</div>
+  <div class="ftr">InvestingLab AI · investinglabai@gmail.com<br/>Computer-generated receipt — no signature required.</div>
 </div></body></html>`;
   const a = Object.assign(document.createElement("a"), {
     href: URL.createObjectURL(new Blob([html], { type: "text/html" })),
@@ -72,14 +79,24 @@ body{font-family:'Segoe UI',sans-serif;background:#f8f9fe;padding:40px;color:#1e
 }
 
 export default function PostPaymentModal(props: PostPaymentModalProps) {
-  const { isOpen, onClose, planName, duration, amountPaid, paymentId, expiresAt } = props;
+  const {
+    isOpen,
+    onClose,
+    planName,
+    duration,
+    amountPaid,
+    paymentId,
+    expiresAt,
+  } = props;
   const color = PLAN_COLOR[planName];
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="fixed inset-0 z-[200] flex items-center justify-center p-4"
           style={{ background: "rgba(0,0,0,.8)", backdropFilter: "blur(10px)" }}
         >
@@ -91,30 +108,69 @@ export default function PostPaymentModal(props: PostPaymentModalProps) {
             className="relative w-full max-w-md bg-[#0a0a14] border border-white/10 rounded-3xl overflow-hidden shadow-2xl"
           >
             {/* Top glow line */}
-            <div className="absolute top-0 inset-x-0 h-px" style={{ background: `linear-gradient(90deg,transparent,${color},transparent)` }} />
+            <div
+              className="absolute top-0 inset-x-0 h-px"
+              style={{
+                background: `linear-gradient(90deg,transparent,${color},transparent)`,
+              }}
+            />
 
             {/* Success burst */}
             <div className="flex flex-col items-center pt-8 pb-4 px-6 text-center">
               <motion.div
-                initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 300 }}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.15, type: "spring", stiffness: 300 }}
                 className="w-20 h-20 rounded-full flex items-center justify-center mb-5"
-                style={{ background: `radial-gradient(circle,${color}30,${color}10)`, border: `2px solid ${color}50`, boxShadow: `0 0 40px ${color}30` }}
+                style={{
+                  background: `radial-gradient(circle,${color}30,${color}10)`,
+                  border: `2px solid ${color}50`,
+                  boxShadow: `0 0 40px ${color}30`,
+                }}
               >
                 <CheckCircle2 className="w-10 h-10" style={{ color }} />
               </motion.div>
-              <h2 className="text-2xl font-extrabold text-white mb-1">Payment Successful!</h2>
-              <p className="text-slate-400 text-sm">Welcome to <span className="font-bold" style={{ color }}>{planName}</span> membership</p>
+              <h2 className="text-2xl font-extrabold text-white mb-1">
+                Payment Successful!
+              </h2>
+              <p className="text-slate-400 text-sm">
+                Welcome to{" "}
+                <span className="font-bold" style={{ color }}>
+                  {planName}
+                </span>{" "}
+                membership
+              </p>
             </div>
 
             {/* Details */}
-            <div className="mx-6 mb-5 rounded-2xl overflow-hidden border border-white/8" style={{ background: "rgba(255,255,255,0.04)" }}>
+            <div
+              className="mx-6 mb-5 rounded-2xl overflow-hidden border border-white/8"
+              style={{ background: "rgba(255,255,255,0.04)" }}
+            >
               {[
-                { icon: Package,    label: "Plan",         value: `${planName} · ${DURATION_LABELS[duration]}` },
-                { icon: Calendar,   label: "Valid Until",  value: expiresAt },
-                { icon: CreditCard, label: "Amount Paid",  value: `₹${amountPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}` },
+                {
+                  icon: Package,
+                  label: "Plan",
+                  value: `${planName} · ${DURATION_LABELS[duration]}`,
+                },
+                { icon: Calendar, label: "Valid Until", value: expiresAt },
+                {
+                  icon: CreditCard,
+                  label: "Amount Paid",
+                  value: `₹${amountPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}`,
+                },
               ].map(({ icon: Icon, label, value }, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-0">
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${color}15`, border: `1px solid ${color}25` }}>
+                <div
+                  key={i}
+                  className="flex items-center gap-3 px-4 py-3 border-b border-white/5 last:border-0"
+                >
+                  <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: `${color}15`,
+                      border: `1px solid ${color}25`,
+                    }}
+                  >
                     <Icon className="w-4 h-4" style={{ color }} />
                   </div>
                   <div>
@@ -131,7 +187,10 @@ export default function PostPaymentModal(props: PostPaymentModalProps) {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => downloadInvoice(props)}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white text-sm"
-                style={{ background: `linear-gradient(135deg,${color},${color}cc)`, boxShadow: `0 8px 24px ${color}40` }}
+                style={{
+                  background: `linear-gradient(135deg,${color},${color}cc)`,
+                  boxShadow: `0 8px 24px ${color}40`,
+                }}
               >
                 <Download className="w-4 h-4" /> Download Invoice
               </motion.button>
@@ -143,7 +202,10 @@ export default function PostPaymentModal(props: PostPaymentModalProps) {
               </button>
             </div>
 
-            <button onClick={onClose} className="absolute top-4 right-4 p-1.5 rounded-full bg-white/8 hover:bg-white/15 text-white/50 hover:text-white transition-colors">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-1.5 rounded-full bg-white/8 hover:bg-white/15 text-white/50 hover:text-white transition-colors"
+            >
               <X className="w-4 h-4" />
             </button>
           </motion.div>

@@ -3,8 +3,16 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  CheckCircle2, Calendar, Zap, Crown, Gem, Download,
-  ShieldCheck, Sparkles, ArrowRight, Clock,
+  CheckCircle2,
+  Calendar,
+  Zap,
+  Crown,
+  Gem,
+  Download,
+  ShieldCheck,
+  Sparkles,
+  ArrowRight,
+  Clock,
 } from "lucide-react";
 import type { PlanName } from "@/config/pricing.config";
 
@@ -74,10 +82,21 @@ const PLAN_CONFIG = {
 } satisfies Record<PlanName, any>;
 
 function downloadInvoiceLocal(record: any) {
-  const color = record.planName === "Gold" ? "#f59e0b" : record.planName === "Diamond" ? "#a78bfa" : "#94a3b8";
-  const amtRs = (record.amountPaise / 100).toLocaleString("en-IN", { minimumFractionDigits: 2 });
+  const color =
+    record.planName === "Gold"
+      ? "#f59e0b"
+      : record.planName === "Diamond"
+        ? "#a78bfa"
+        : "#94a3b8";
+  const amtRs = (record.amountPaise / 100).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+  });
   const expiry = record.expiresAt
-    ? new Date(record.expiresAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+    ? new Date(record.expiresAt).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
     : "N/A";
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Invoice</title>
 <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',sans-serif;background:#f8f9fe;padding:40px;color:#1e293b;}
@@ -95,7 +114,7 @@ function downloadInvoiceLocal(record: any) {
 .ftr{background:#f8f9fe;padding:14px 32px;text-align:center;font-size:10px;color:#94a3b8;border-top:1px solid #e2e8f0;}
 </style></head><body>
 <div class="box">
-  <div class="hdr"><h1>Praedico Global Research</h1><p>Tax Invoice / Payment Receipt</p>
+  <div class="hdr"><h1>InvestingLab AI</h1><p>Tax Invoice / Payment Receipt</p>
   <div class="inv">INVOICE #${(record._id || record.razorpayPaymentId || "").toString().slice(-8).toUpperCase()}</div></div>
   <div class="body">
     <div class="row"><span class="k">Plan</span><span class="v">${record.planName}</span></div>
@@ -108,7 +127,7 @@ function downloadInvoiceLocal(record: any) {
       <div style="text-align:right;font-size:11px;color:#64748b"><div>One-time</div><div>No auto-renewal</div></div>
     </div>
   </div>
-  <div class="ftr">Praedico Global Research · support@praedico.com<br/>Computer-generated receipt.</div>
+  <div class="ftr">InvestingLab AI · support@praedico.com<br/>Computer-generated receipt.</div>
 </div></body></html>`;
   const a = Object.assign(document.createElement("a"), {
     href: URL.createObjectURL(new Blob([html], { type: "text/html" })),
@@ -118,14 +137,18 @@ function downloadInvoiceLocal(record: any) {
 }
 
 export default function MemberView({
-  planName, isOnTrial, expiryDate, userName, paymentHistory, onUpgradeClick,
+  planName,
+  isOnTrial,
+  expiryDate,
+  userName,
+  paymentHistory,
+  onUpgradeClick,
 }: MemberViewProps) {
   const cfg = PLAN_CONFIG[planName];
   const PlanIcon = cfg.icon;
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-
       {/* ── Background image with overlay ── */}
       <div className="fixed inset-0 z-0">
         <Image
@@ -136,16 +159,20 @@ export default function MemberView({
           priority
           quality={90}
         />
-        <div className="absolute inset-0" style={{
-          background: `linear-gradient(180deg, rgba(5,5,15,0.72) 0%, rgba(5,5,15,0.85) 40%, rgba(5,5,15,0.97) 100%)`,
-        }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(180deg, rgba(5,5,15,0.72) 0%, rgba(5,5,15,0.85) 40%, rgba(5,5,15,0.97) 100%)`,
+          }}
+        />
         {/* Glow orb */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-20 pointer-events-none"
-          style={{ background: cfg.accent }} />
+        <div
+          className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-20 pointer-events-none"
+          style={{ background: cfg.accent }}
+        />
       </div>
 
       <div className="relative z-10 pt-28 pb-20 px-6 max-w-5xl mx-auto">
-
         {/* ── Hero Member Card ─────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 32 }}
@@ -159,44 +186,78 @@ export default function MemberView({
           }}
         >
           {/* Top accent bar */}
-          <div className="h-1 w-full" style={{ background: `linear-gradient(90deg,transparent,${cfg.accent},transparent)` }} />
+          <div
+            className="h-1 w-full"
+            style={{
+              background: `linear-gradient(90deg,transparent,${cfg.accent},transparent)`,
+            }}
+          />
 
           <div className="p-8 md:p-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex items-center gap-5">
                 {/* Plan icon */}
-                <div className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `radial-gradient(circle,${cfg.accent}25,${cfg.accent}08)`, border: `1.5px solid ${cfg.accent}40`, boxShadow: `0 0 30px ${cfg.accent}20` }}>
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
+                  style={{
+                    background: `radial-gradient(circle,${cfg.accent}25,${cfg.accent}08)`,
+                    border: `1.5px solid ${cfg.accent}40`,
+                    boxShadow: `0 0 30px ${cfg.accent}20`,
+                  }}
+                >
                   <PlanIcon className="w-8 h-8" style={{ color: cfg.accent }} />
                 </div>
                 <div>
                   {/* Badge */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-2"
-                    style={{ background: `${cfg.accent}15`, border: `1px solid ${cfg.accent}30`, color: cfg.accent }}>
+                  <div
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-2"
+                    style={{
+                      background: `${cfg.accent}15`,
+                      border: `1px solid ${cfg.accent}30`,
+                      color: cfg.accent,
+                    }}
+                  >
                     <ShieldCheck className="w-3 h-3" /> {cfg.badge}
                   </div>
                   <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
                     {userName ? `Welcome back,` : "You're a Member"}
                   </h1>
                   {userName && (
-                    <p className="text-2xl font-bold mt-0.5" style={{ color: cfg.accent }}>{userName}</p>
+                    <p
+                      className="text-2xl font-bold mt-0.5"
+                      style={{ color: cfg.accent }}
+                    >
+                      {userName}
+                    </p>
                   )}
                   <p className="text-slate-400 text-sm mt-1">{cfg.tagline}</p>
                 </div>
               </div>
 
               {/* Expiry pill */}
-              <div className="flex-shrink-0 rounded-2xl px-5 py-4 text-center"
-                style={{ background: `${cfg.accent}10`, border: `1px solid ${cfg.accent}25` }}>
-                <div className="flex items-center gap-1.5 justify-center mb-1" style={{ color: cfg.accent }}>
+              <div
+                className="flex-shrink-0 rounded-2xl px-5 py-4 text-center"
+                style={{
+                  background: `${cfg.accent}10`,
+                  border: `1px solid ${cfg.accent}25`,
+                }}
+              >
+                <div
+                  className="flex items-center gap-1.5 justify-center mb-1"
+                  style={{ color: cfg.accent }}
+                >
                   <Calendar className="w-3.5 h-3.5" />
                   <span className="text-xs font-semibold uppercase tracking-wider">
                     {isOnTrial ? "Trial Ends" : "Access Until"}
                   </span>
                 </div>
-                <p className="text-white font-bold text-lg">{expiryDate || "—"}</p>
+                <p className="text-white font-bold text-lg">
+                  {expiryDate || "—"}
+                </p>
                 {isOnTrial && (
-                  <p className="text-xs mt-1" style={{ color: cfg.accent }}>7-day free trial</p>
+                  <p className="text-xs mt-1" style={{ color: cfg.accent }}>
+                    7-day free trial
+                  </p>
                 )}
               </div>
             </div>
@@ -205,12 +266,16 @@ export default function MemberView({
 
         {/* ── Features + Invoice grid ───────────────────── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-
           {/* Features */}
           <motion.div
-            initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.15 }}
             className="rounded-2xl p-6"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
           >
             <div className="flex items-center gap-2 mb-5">
               <Sparkles className="w-4 h-4" style={{ color: cfg.accent }} />
@@ -220,12 +285,22 @@ export default function MemberView({
               {cfg.features.map((f: string, i: number) => (
                 <motion.div
                   key={f}
-                  initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + i * 0.06 }}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.06 }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: `${cfg.accent}20`, border: `1px solid ${cfg.accent}30` }}>
-                    <CheckCircle2 className="w-3 h-3" style={{ color: cfg.accent }} />
+                  <div
+                    className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                      background: `${cfg.accent}20`,
+                      border: `1px solid ${cfg.accent}30`,
+                    }}
+                  >
+                    <CheckCircle2
+                      className="w-3 h-3"
+                      style={{ color: cfg.accent }}
+                    />
                   </div>
                   <span className="text-slate-300 text-sm">{f}</span>
                 </motion.div>
@@ -251,13 +326,20 @@ export default function MemberView({
 
           {/* Invoice history */}
           <motion.div
-            initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
             className="rounded-2xl p-6"
-            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
           >
             <div className="flex items-center gap-2 mb-5">
               <Clock className="w-4 h-4" style={{ color: cfg.accent }} />
-              <h2 className="text-white font-bold text-base">Payment Invoices</h2>
+              <h2 className="text-white font-bold text-base">
+                Payment Invoices
+              </h2>
             </div>
 
             {paymentHistory.length === 0 ? (
@@ -267,25 +349,43 @@ export default function MemberView({
             ) : (
               <div className="space-y-3">
                 {paymentHistory.map((r, i) => (
-                  <div key={i}
+                  <div
+                    key={i}
                     className="flex items-center justify-between p-3 rounded-xl"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}
+                    style={{
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                    }}
                   >
                     <div>
-                      <p className="text-white text-sm font-semibold">{r.planName} · {r.duration} mo</p>
+                      <p className="text-white text-sm font-semibold">
+                        {r.planName} · {r.duration} mo
+                      </p>
                       <p className="text-slate-500 text-xs mt-0.5">
-                        {new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                        {new Date(r.createdAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
                         {" · "}
-                        <span style={{ color: cfg.accent }}>₹{(r.amountPaise / 100).toLocaleString("en-IN")}</span>
+                        <span style={{ color: cfg.accent }}>
+                          ₹{(r.amountPaise / 100).toLocaleString("en-IN")}
+                        </span>
                       </p>
                     </div>
                     <button
                       onClick={() => downloadInvoiceLocal(r)}
                       className="p-2 rounded-lg transition-colors"
-                      style={{ background: `${cfg.accent}15`, border: `1px solid ${cfg.accent}25` }}
+                      style={{
+                        background: `${cfg.accent}15`,
+                        border: `1px solid ${cfg.accent}25`,
+                      }}
                       title="Download Invoice"
                     >
-                      <Download className="w-3.5 h-3.5" style={{ color: cfg.accent }} />
+                      <Download
+                        className="w-3.5 h-3.5"
+                        style={{ color: cfg.accent }}
+                      />
                     </button>
                   </div>
                 ))}
@@ -296,14 +396,22 @@ export default function MemberView({
 
         {/* ── Bottom trust bar ──────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
           className="flex flex-wrap justify-center gap-6 text-slate-500 text-xs"
         >
-          {["Secured by Razorpay", "No auto-renewal", "Instant activation"].map((t) => (
-            <span key={t} className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5" style={{ color: cfg.accent }} /> {t}
-            </span>
-          ))}
+          {["Secured by Razorpay", "No auto-renewal", "Instant activation"].map(
+            (t) => (
+              <span key={t} className="flex items-center gap-1.5">
+                <ShieldCheck
+                  className="w-3.5 h-3.5"
+                  style={{ color: cfg.accent }}
+                />{" "}
+                {t}
+              </span>
+            ),
+          )}
         </motion.div>
       </div>
     </div>

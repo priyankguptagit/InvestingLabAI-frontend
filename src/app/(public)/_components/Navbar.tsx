@@ -14,7 +14,13 @@ import CertificateModal from "./CertificateModal";
  * SearchParamsHandler - Handles URL search parameters
  * Needs to be wrapped in Suspense for Next.js build
  */
-function SearchParamsHandler({ onOpenLogin, onOpenRegister }: { onOpenLogin: () => void, onOpenRegister: () => void }) {
+function SearchParamsHandler({
+  onOpenLogin,
+  onOpenRegister,
+}: {
+  onOpenLogin: () => void;
+  onOpenRegister: () => void;
+}) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -34,21 +40,21 @@ function SearchParamsHandler({ onOpenLogin, onOpenRegister }: { onOpenLogin: () 
 }
 
 const navItems = [
-  { label: "Home",     href: "/" },
-  { label: "About",    href: "/about" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Pricing",  href: "/pricing" },
-  { label: "Product",  href: "/product" },
-  { label: "Gallery",  href: "/gallery" },
-  { label: "Markets",  href: "/markets" },
-  { label: "News",     href: "/news" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Product", href: "/product" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Markets", href: "/markets" },
+  { label: "News", href: "/news" },
   { label: "Contacts", href: "/contacts" },
-  { label: "Apply",    href: "/apply" },
+  { label: "Apply", href: "/apply" },
 ];
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled]             = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen]     = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isCertificateModalOpen, setIsCertificateModalOpen] = useState(false);
@@ -65,21 +71,25 @@ export default function Navbar() {
   // ── Lock body scroll when mobile menu is open ──────────────────
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileMenuOpen]);
 
   // ── Close drawer on route change ───────────────────────────────
-  useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
-  const handleSignIn      = useCallback(() => setIsLoginModalOpen(true), []);
-  const handleGetStarted  = useCallback(() => setIsRegisterModalOpen(true), []);
+  const handleSignIn = useCallback(() => setIsLoginModalOpen(true), []);
+  const handleGetStarted = useCallback(() => setIsRegisterModalOpen(true), []);
 
   return (
     <>
       <Suspense fallback={null}>
-        <SearchParamsHandler 
-          onOpenLogin={() => setIsLoginModalOpen(true)} 
-          onOpenRegister={() => setIsRegisterModalOpen(true)} 
+        <SearchParamsHandler
+          onOpenLogin={() => setIsLoginModalOpen(true)}
+          onOpenRegister={() => setIsRegisterModalOpen(true)}
         />
       </Suspense>
 
@@ -92,19 +102,21 @@ export default function Navbar() {
         }`}
       >
         <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-
           {/* ── LOGO ────────────────────────────────────────────── */}
-          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+          <Link
+            href="/"
+            className="flex items-center gap-2 group flex-shrink-0"
+          >
             <Image
-              src="/praedico-logo.png"
+              src="/investinglabai.png"
               alt="Praedico Logo"
               width={36}
               height={36}
               className="rounded-xl group-hover:scale-110 transition-transform duration-300"
             />
             <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-              Praedico
-              <span className="font-light text-slate-500 hidden sm:inline">GlobalResearch</span>
+              InvestingLabAI
+              <span className="font-light text-slate-500 hidden sm:inline"></span>
             </span>
           </Link>
 
@@ -173,7 +185,6 @@ export default function Navbar() {
           }`}
         >
           <div className="bg-[#020617]/98 backdrop-blur-2xl border-t border-slate-800/60 px-4 pb-6 pt-4">
-
             {/* Nav links grid */}
             <div className="grid grid-cols-2 gap-2 mb-6">
               {navItems.map(({ label, href }) => {
@@ -204,20 +215,29 @@ export default function Navbar() {
             {/* Auth buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => { setMobileMenuOpen(false); setIsCertificateModalOpen(true); }}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsCertificateModalOpen(true);
+                }}
                 className="flex items-center justify-center gap-2 py-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-bold text-xs uppercase tracking-widest hover:bg-indigo-500/20 transition-all"
               >
                 <Award size={18} />
                 Certificate
               </button>
               <button
-                onClick={() => { setMobileMenuOpen(false); handleSignIn(); }}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleSignIn();
+                }}
                 className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-all text-sm"
               >
                 Sign In
               </button>
               <button
-                onClick={() => { setMobileMenuOpen(false); handleGetStarted(); }}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleGetStarted();
+                }}
                 className="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white font-medium hover:from-indigo-500 hover:to-fuchsia-500 transition-all text-sm shadow-lg shadow-indigo-500/20"
               >
                 Get Started
